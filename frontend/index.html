@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Stock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Indicators Everywhere</h1>
+    
+    <input 
+        type="text" 
+        id="userInput" 
+        placeholder="Enter the symbol text here"
+    >
+    
+    <button onclick="handleSubmit()">Submit</button>
+    
+    <div id="result"></div>
+    <h1>Stock Analysis Results</h1>
+    <div id="summary" class="summary-container"></div>
+    <h2>Indicator Signals</h2>
+    <div id="signals" class="signals-container"></div>
+
+    <script>
+        function handleSubmit() {
+            // Get the input value
+            const inputElement = document.getElementById('userInput');
+            const inputValue = inputElement.value;
+
+            // Make a GET request to the localhost server
+            fetch(`http://localhost:5000/api/data?input=${encodeURIComponent(inputValue)}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response
+                    displaySummary(data.summary)
+                    displaySignals(data.signals)
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                });
+            
+        }
+
+        // Function to display summary
+        function displaySummary(summary) {
+            const summaryDiv = document.getElementById('summary');
+            summaryDiv.innerHTML = `
+                <h2>Summary</h2>
+                <p>Buy: ${summary.buy}</p>
+                <p>Sell: ${summary.sell}</p>
+                <p>Neutral: ${summary.neutral}</p>
+                <p>Overall Signal: ${summary.signal}</p>
+            `;
+        }
+
+        // Function to display signals
+        function displaySignals(signals) {
+            const signalsDiv = document.getElementById('signals');
+            signalsDiv.innerHTML = ''; // Clear previous content
+
+            signals.forEach(signal => {
+                const signalDiv = document.createElement('div');
+                signalDiv.className = 'signal-item';
+
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'signal-header';
+                headerDiv.innerHTML = `
+                    <strong>${signal.indicator}</strong>
+                    <p>Summary: ${signal.summary}</p>
+                    <p>Count: ${signal.count}</p>
+                `;
+
+                const historyDiv = document.createElement('div');
+                historyDiv.className = 'signal-history';
+                signal.history.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.textContent = item;
+                    historyDiv.appendChild(historyItem);
+                });
+
+                signalDiv.appendChild(headerDiv);
+                signalDiv.appendChild(historyDiv);
+                signalsDiv.appendChild(signalDiv);
+            });
+        }
+
+        inputElement.value = '';
+
+        // Optional: Allow submission by pressing Enter key
+        document.getElementById('userInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        });
+    </script>
+</body>
+</html>
