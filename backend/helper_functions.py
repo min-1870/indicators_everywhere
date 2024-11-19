@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import boto3
-import os
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+import os
+from constants import PATH_TO_GRAPHS, S3_GRAPHS_PATH, S3_BUCKET_NAME, EC2_GRAPHS_PATH
 
 # Load a custom font
 # plt.rcParams['font.family'] = 'custom_font'
@@ -17,7 +18,7 @@ plt.rcParams.update({
     'ytick.labelsize': 8
 })
 
-def plot_two_graphs(indicator_symbol, window, target_stock_data, column_1, label_1, column_2, label_2):
+def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, column_1, label_1, column_2, label_2):
     # Plotting
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
@@ -33,17 +34,22 @@ def plot_two_graphs(indicator_symbol, window, target_stock_data, column_1, label
     ax2.set_ylabel(label_2, color='blue')
     ax2.tick_params(axis='y', labelcolor='blue')
 
-    # Adding title and legend
+    # Add legend outside the plot
     fig.legend(loc="upper right", bbox_to_anchor=(1,1), bbox_transform=ax1.transAxes)
 
     # Add grid
     # ax1.grid(True)
-    plt.box(False)
+    # plt.box(False)
+
     # Save the graph
-    plt.savefig(f'graphs/{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png')
+    file_name = f'{stock_symbol}_{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png'
+    graphs_directory = f'{EC2_GRAPHS_PATH}{file_name}'
+    plt.savefig(graphs_directory)
+    upload_image_to_s3(file_name)
+
     plt.close()
 
-def plot_graph(indicator_symbol, window, target_stock_data, ylabel, columns):
+def plot_graph(stock_symbol, indicator_symbol, window, target_stock_data, ylabel, columns):
 
     # Create a new figure and axis
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -62,30 +68,43 @@ def plot_graph(indicator_symbol, window, target_stock_data, ylabel, columns):
     ax.set_xlabel('Date')
     ax.set_ylabel(ylabel)
 
-    # Adding grid
-    # ax.grid(True)
-    plt.box(False)
     # Add legend outside the plot
     fig.legend(loc="upper right", bbox_to_anchor=(1,1), bbox_transform=ax.transAxes)
 
     # Adjust layout to make room for the legend
     plt.tight_layout()
 
-    # Save the graph
-    plt.savefig(f'graphs/{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png')
+    # Adding grid
+    # ax.grid(True)
+    # plt.box(False)
+
+    # Save the graph 
+    file_name = f'{stock_symbol}_{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png'
+    graphs_directory = f'{EC2_GRAPHS_PATH}{file_name}'
+    plt.savefig(graphs_directory)
+    upload_image_to_s3(file_name)
+
     plt.close()
 
-def upload_image_to_s3(local_directory, bucket_name, s3_directory):
+def upload_image_to_s3(file_name):
     
     try:
         # Initialize the S3 client
         s3 = boto3.client('s3')
 
-        file_name = local_directory.split('/')[-1]
-        s3_directory = f"{s3_directory}{file_name}"
+        local_directory = f"{PATH_TO_GRAPHS}{file_name}"
+        s3_directory = f"{S3_GRAPHS_PATH}{file_name}"
 
         # Upload the file
-        s3.upload_file(local_directory, bucket_name, s3_directory)
+        s3.upload_file(
+            local_directory, 
+            S3_BUCKET_NAME, 
+            s3_directory,
+            ExtraArgs={
+                'ContentType': 'image/png',  
+                'ACL': 'public-read'
+            }
+        )
     
     except FileNotFoundError:
         print("The file was not found.")
@@ -95,10 +114,3 @@ def upload_image_to_s3(local_directory, bucket_name, s3_directory):
         print("Incomplete credentials provided.")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-# Usage
-# local_photo_directory = '/home/ec2-user/projects/indicators_everywhere_venv/indicators_everywhere/backend/BB_5_2024-11-18.png'
-# s3_bucket_name = 'indicators-everywhere'
-# s3_directory = 'graphs/'  # Optional: prefix for organizing in S3
-
-# upload_image_to_s3(local_photo_directory, s3_bucket_name, s3_directory)

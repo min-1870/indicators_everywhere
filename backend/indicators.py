@@ -1,7 +1,7 @@
 import pandas_ta as ta
 from helper_functions import plot_graph, plot_two_graphs
 
-def calculate_obv(stock_data, window=5):
+def calculate_obv(stock_symbol, stock_data, window=5):
     '''
     On-Balance Volume (OBV)
     Buy: OBV is trending up while price is flat or rising
@@ -24,7 +24,7 @@ def calculate_obv(stock_data, window=5):
     # OBV is trending down while price is flat or falling
     sell_signal = (target_stock_data['OBV_trend'] < 0) & (target_stock_data['Price_trend'] <= 0)
 
-    plot_two_graphs('OBV', window, target_stock_data, 'OBV', 'OBV', 'Close', 'Price')
+    plot_two_graphs(stock_symbol, 'OBV', window, target_stock_data, 'OBV', 'OBV', 'Close', 'Price')
     
     return {
         'indicator':'On-Balance Volume (OBV)',
@@ -32,7 +32,7 @@ def calculate_obv(stock_data, window=5):
         'sell':sell_signal
     }
 
-def calculate_rsi(stock_data, window=5):
+def calculate_rsi(stock_symbol, stock_data, window=5):
     '''
     Relative Strength Index (RSI)
     Buy: RSI < 30 (oversold condition)
@@ -53,7 +53,7 @@ def calculate_rsi(stock_data, window=5):
     # RSI > 70 (overbought condition)
     sell_signal = (target_stock_data['RSI'] > 70)
 
-    plot_graph('RSI', window, target_stock_data, 'RSI',[
+    plot_graph(stock_symbol, 'RSI', window, target_stock_data, 'RSI',[
         {
             'column':'RSI', 
             'linestyle':'-',
@@ -68,7 +68,7 @@ def calculate_rsi(stock_data, window=5):
         'sell':sell_signal
     }
 
-def calculate_macd(stock_data, window=5):
+def calculate_macd(stock_symbol, stock_data, window=5):
     '''
     Moving Average Convergence Divergence (MACD)
     Buy: MACD line crosses above the signal line
@@ -92,7 +92,7 @@ def calculate_macd(stock_data, window=5):
         (target_stock_data['MACD'].shift(1) > target_stock_data['Signal_Line'].shift(1)) & 
         (target_stock_data['MACD'] < target_stock_data['Signal_Line']))
 
-    plot_graph('MACD', window, target_stock_data, 'MACD',[
+    plot_graph(stock_symbol, 'MACD', window, target_stock_data, 'MACD',[
         {
             'column':'MACD', 
             'linestyle':'-',
@@ -113,7 +113,7 @@ def calculate_macd(stock_data, window=5):
         'sell':sell_signal
     }
 
-def calculate_bb(stock_data, window=5):
+def calculate_bb(stock_symbol, stock_data, window=5):
     '''
     Bollinger Bands
     Buy: Price touches or goes below the lower band
@@ -126,13 +126,14 @@ def calculate_bb(stock_data, window=5):
     stock_data['Lower_BB'] = stock_data['MA20'] - (stock_data['20d_std'] * 2)
 
     target_stock_data = stock_data.tail(window)
+
     # Price touches or goes below the lower band
     buy_signal = (target_stock_data['Lower_BB'] >= target_stock_data['Close'])
 
     # Price touches or goes above the upper band
     sell_signal = (target_stock_data['Upper_BB'] <= target_stock_data['Close'])
 
-    plot_graph('BB', window, target_stock_data, 'Price',[
+    plot_graph(stock_symbol, 'BB', window, target_stock_data, 'Price',[
         {
             'column':'Close', 
             'linestyle':'-',
@@ -159,7 +160,7 @@ def calculate_bb(stock_data, window=5):
         'sell':sell_signal
     }
 
-def calculate_gdc(stock_data, window=5):
+def calculate_gdc(stock_symbol, stock_data, window=5):
     '''
     Golden/Death Cross
     Buy: 50-day MA crosses above 200-day MA
@@ -170,8 +171,16 @@ def calculate_gdc(stock_data, window=5):
     stock_data['SMA200'] = stock_data['Close'].rolling(window=200).mean()
 
     target_stock_data = stock_data.tail(window)
+    
+    # 50-day MA crosses above 200-day MA
+    buy_signal = ((target_stock_data['SMA50'].shift(1) < target_stock_data['SMA200'].shift(1)) &
+                  (target_stock_data['SMA50'] > target_stock_data['SMA200']))
 
-    plot_graph('GDC', window, target_stock_data, 'Price',[
+    # 50-day MA crosses below 200-day MA
+    sell_signal = ((target_stock_data['SMA50'].shift(1) > target_stock_data['SMA200'].shift(1)) &
+                   (target_stock_data['SMA50'] < target_stock_data['SMA200']))
+
+    plot_graph(stock_symbol, 'GDC', window, target_stock_data, 'Price',[
         {
             'column':'Close', 
             'linestyle':'-',
@@ -196,11 +205,9 @@ def calculate_gdc(stock_data, window=5):
         'indicator':'Golden/Death Cross',
         
         # 50-day MA crosses above 200-day MA
-        'buy':((target_stock_data['SMA50'].shift(1) < target_stock_data['SMA200'].shift(1)) &
-                  (target_stock_data['SMA50'] > target_stock_data['SMA200'])),
+        'buy':buy_signal,
         
         # 50-day MA crosses below 200-day MA
-        'sell':((target_stock_data['SMA50'].shift(1) > target_stock_data['SMA200'].shift(1)) &
-                   (target_stock_data['SMA50'] < target_stock_data['SMA200']))
+        'sell':sell_signal
     }
 

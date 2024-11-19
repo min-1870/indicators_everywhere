@@ -1,7 +1,7 @@
 from fetch import fetch_data
 from indicators import calculate_bb, calculate_gdc, calculate_macd, calculate_obv, calculate_rsi
 
-def analyze_stock(symbol, window):
+def analyze_stock(stock_symbol, window):
 
     def summarize_signal(dates, signal):
 
@@ -85,7 +85,7 @@ def analyze_stock(symbol, window):
 
     # Fetch history prices
     try:
-        stock_data = fetch_data(symbol, 300)
+        stock_data = fetch_data(stock_symbol, 300)
     except:
         raise ValueError("Failed to fetch finance history from Yahoo.")
     
@@ -94,11 +94,11 @@ def analyze_stock(symbol, window):
             
     # Calculate Indicators
     calculated_signals = [
-        calculate_bb(stock_data, window),
-        calculate_gdc(stock_data, window),
-        calculate_macd(stock_data, window),
-        calculate_obv(stock_data, window),
-        calculate_rsi(stock_data, window)
+        calculate_bb(stock_symbol, stock_data, window),
+        calculate_gdc(stock_symbol, stock_data, window),
+        calculate_macd(stock_symbol, stock_data, window),
+        calculate_obv(stock_symbol, stock_data, window),
+        calculate_rsi(stock_symbol, stock_data, window)
     ]
      
     # Summarize the calculated signals
