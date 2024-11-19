@@ -1,0 +1,1 @@
+PATH_TO_GRAPHS = '/home/ec2-user/projects/indicators_everywhere_venv/indicators_everywhere/backend/'
