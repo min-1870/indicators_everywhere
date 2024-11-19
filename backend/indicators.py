@@ -1,7 +1,7 @@
 import pandas_ta as ta
 from helper_functions import plot_graph, plot_two_graphs
 
-def calculate_obv(stock_symbol, stock_data, window=5):
+def calculate_obv(stock_symbol, stock_data, window=14):
     '''
     On-Balance Volume (OBV)
     Buy: OBV is trending up while price is flat or rising
@@ -46,7 +46,7 @@ def calculate_obv(stock_symbol, stock_data, window=5):
         'graph_url':graph_url
     }
 
-def calculate_rsi(stock_symbol, stock_data, window=5):
+def calculate_rsi(stock_symbol, stock_data, window=14):
     '''
     Relative Strength Index (RSI)
     Buy: RSI < 30 (oversold condition)
@@ -83,7 +83,7 @@ def calculate_rsi(stock_symbol, stock_data, window=5):
         'graph_url':graph_url
     }
 
-def calculate_macd(stock_symbol, stock_data, window=5):
+def calculate_macd(stock_symbol, stock_data, window=14):
     '''
     Moving Average Convergence Divergence (MACD)
     Buy: MACD line crosses above the signal line
@@ -129,7 +129,7 @@ def calculate_macd(stock_symbol, stock_data, window=5):
         'graph_url':graph_url
     }
 
-def calculate_bb(stock_symbol, stock_data, window=5):
+def calculate_bb(stock_symbol, stock_data, window=14):
     '''
     Bollinger Bands
     Buy: Price touches or goes below the lower band
@@ -177,14 +177,14 @@ def calculate_bb(stock_symbol, stock_data, window=5):
         'graph_url':graph_url
     }
 
-def calculate_gdc(stock_symbol, stock_data, window=5):
+def calculate_gdc(stock_symbol, stock_data, window=14):
     '''
     Golden/Death Cross
     Buy: 50-day MA crosses above 200-day MA
     Sell: 50-day MA crosses below 200-day MA
     '''
 
-    stock_data['SMA50'] = stock_data['Close'].rolling(window=50).mean()
+    stock_data['SMA50'] = stock_data['Close'].rolling(window=140).mean()
     stock_data['SMA200'] = stock_data['Close'].rolling(window=200).mean()
 
     target_stock_data = stock_data.tail(window)
@@ -225,3 +225,54 @@ def calculate_gdc(stock_symbol, stock_data, window=5):
         'graph_url':graph_url
     }
 
+def calculate_so(stock_symbol, stock_data, window=14):
+    '''
+    Stochastic Oscillator
+    Buy: When %K line crosses above %D line and both lines are below 20
+    Sell: When %K line crosses below %D line and both lines are above 80
+    '''
+    low_min = stock_data['Low'].rolling(window=window).min()
+    high_max = stock_data['High'].rolling(window=window).max()
+    
+    # Calculate %K
+    stock_data['%K_raw'] = 100 * (stock_data['Close'] - low_min) / (high_max - low_min)
+    stock_data['%K'] = stock_data['%K_raw'].rolling(window=3).mean()
+    
+    # Calculate %D
+    stock_data['%D'] = stock_data['%K'].rolling(window=3).mean()
+
+    target_stock_data = stock_data.tail(window)
+    
+    # Buy signal
+    buy_signal = ((target_stock_data['%K'].shift(1) < target_stock_data['%D'].shift(1)) &
+                  (target_stock_data['%K'] > target_stock_data['%D']) &
+                  (target_stock_data['%K'] < 20) &
+                  (target_stock_data['%D'] < 20))
+
+    # Sell signal
+    sell_signal = ((target_stock_data['%K'].shift(1) > target_stock_data['%D'].shift(1)) &
+                   (target_stock_data['%K'] < target_stock_data['%D']) &
+                   (target_stock_data['%K'] > 80) &
+                   (target_stock_data['%D'] > 80))
+
+    graph_url = plot_graph(stock_symbol, 'SO', window, target_stock_data, 'Stochastic Oscillator', [
+        {
+            'column':'%K', 
+            'linestyle':'-',
+            'color':'blue',
+            'label':'%K'
+        },
+        {
+            'column':'%D', 
+            'linestyle':'-',
+            'color':'red',
+            'label':'%D'
+        }
+    ])
+
+    return {
+        'indicator':'Stochastic Oscillator',
+        'buy':buy_signal,
+        'sell':sell_signal,
+        'graph_url':graph_url
+    }

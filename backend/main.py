@@ -11,7 +11,7 @@ def get_data():
     user_input = request.args.get('input', '')
     # Process the input and send a response
     try:
-        result = analyze_stock(user_input, 5)
+        result = analyze_stock(user_input)
         return jsonify(result), 200
     
     except Exception as e:

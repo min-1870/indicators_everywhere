@@ -1,7 +1,7 @@
 from fetch import fetch_data
-from indicators import calculate_bb, calculate_gdc, calculate_macd, calculate_obv, calculate_rsi
+from indicators import calculate_bb, calculate_gdc, calculate_macd, calculate_obv, calculate_rsi, calculate_so
 
-def analyze_stock(stock_symbol, window):
+def analyze_stock(stock_symbol, window=14):
 
     def summarize_signal(dates, signal):
 
@@ -10,8 +10,7 @@ def analyze_stock(stock_symbol, window):
         neutral = 0
 
         history = []
-
-        for i in range(len(signal)):
+        for i in range(len(signal['buy'])):
             date = dates[i].strftime('%Y-%m-%d')
             if signal['buy'].iloc[i]:
                 history.append(f'Buy - {date}')
@@ -99,21 +98,22 @@ def analyze_stock(stock_symbol, window):
         calculate_gdc(stock_symbol, stock_data, window),
         calculate_macd(stock_symbol, stock_data, window),
         calculate_obv(stock_symbol, stock_data, window),
-        calculate_rsi(stock_symbol, stock_data, window)
+        calculate_rsi(stock_symbol, stock_data, window),
+        calculate_so(stock_symbol, stock_data, window)
     ]
-     
+    
     # Summarize the calculated signals
-    signals = []
+    indicators = []
     for signal in calculated_signals:
         dates = stock_data.tail(window).index.tolist()
-        signals.append(summarize_signal(dates, signal))
+        indicators.append(summarize_signal(dates, signal))
 
     # Summarize overall signals
-    summary = summarize_overall_signal(signals)
+    summary = summarize_overall_signal(indicators)
             
     return {
         'summary': summary,
-        'signals': signals
+        'signals': indicators
     }
     
-# print(analyze_stock('NVDA', 5))
+# print(analyze_stock('NVDA', 14))
