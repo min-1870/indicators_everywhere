@@ -38,6 +38,7 @@ def analyze_stock(stock_symbol, window):
             'indicator': signal['indicator'],
             'summary': summary,
             'count': count,
+            'graph_url': signal['graph_url'],
             'history': history
         }
     

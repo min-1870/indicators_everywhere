@@ -24,12 +24,26 @@ def calculate_obv(stock_symbol, stock_data, window=5):
     # OBV is trending down while price is flat or falling
     sell_signal = (target_stock_data['OBV_trend'] < 0) & (target_stock_data['Price_trend'] <= 0)
 
-    plot_two_graphs(stock_symbol, 'OBV', window, target_stock_data, 'OBV', 'OBV', 'Close', 'Price')
+    column1 = {
+        'column':'OBV',
+        'label':'OBV',
+        'color':'red',
+        'linestyle':'-'
+    }
+    column2 = {
+        'column':'Close',
+        'label':'Price',
+        'color':'blue',
+        'linestyle':'-'
+    }
+
+    graph_url = plot_two_graphs(stock_symbol, 'OBV', window, target_stock_data, column1, column2)
     
     return {
         'indicator':'On-Balance Volume (OBV)',
         'buy':buy_signal,
-        'sell':sell_signal
+        'sell':sell_signal,
+        'graph_url':graph_url
     }
 
 def calculate_rsi(stock_symbol, stock_data, window=5):
@@ -53,7 +67,7 @@ def calculate_rsi(stock_symbol, stock_data, window=5):
     # RSI > 70 (overbought condition)
     sell_signal = (target_stock_data['RSI'] > 70)
 
-    plot_graph(stock_symbol, 'RSI', window, target_stock_data, 'RSI',[
+    graph_url = plot_graph(stock_symbol, 'RSI', window, target_stock_data, 'RSI',[
         {
             'column':'RSI', 
             'linestyle':'-',
@@ -65,7 +79,8 @@ def calculate_rsi(stock_symbol, stock_data, window=5):
     return {
         'indicator':'Relative Strength Index (RSI)',
         'buy':buy_signal,
-        'sell':sell_signal
+        'sell':sell_signal,
+        'graph_url':graph_url
     }
 
 def calculate_macd(stock_symbol, stock_data, window=5):
@@ -92,7 +107,7 @@ def calculate_macd(stock_symbol, stock_data, window=5):
         (target_stock_data['MACD'].shift(1) > target_stock_data['Signal_Line'].shift(1)) & 
         (target_stock_data['MACD'] < target_stock_data['Signal_Line']))
 
-    plot_graph(stock_symbol, 'MACD', window, target_stock_data, 'MACD',[
+    graph_url = plot_graph(stock_symbol, 'MACD', window, target_stock_data, 'MACD',[
         {
             'column':'MACD', 
             'linestyle':'-',
@@ -110,7 +125,8 @@ def calculate_macd(stock_symbol, stock_data, window=5):
     return {
         'indicator':'Moving Average Convergence Divergence (MACD)',
         'buy':buy_signal,
-        'sell':sell_signal
+        'sell':sell_signal,
+        'graph_url':graph_url
     }
 
 def calculate_bb(stock_symbol, stock_data, window=5):
@@ -133,7 +149,7 @@ def calculate_bb(stock_symbol, stock_data, window=5):
     # Price touches or goes above the upper band
     sell_signal = (target_stock_data['Upper_BB'] <= target_stock_data['Close'])
 
-    plot_graph(stock_symbol, 'BB', window, target_stock_data, 'Price',[
+    graph_url = plot_graph(stock_symbol, 'BB', window, target_stock_data, 'Price',[
         {
             'column':'Close', 
             'linestyle':'-',
@@ -157,7 +173,8 @@ def calculate_bb(stock_symbol, stock_data, window=5):
     return {
         'indicator':'Bollinger Bands',
         'buy':buy_signal,
-        'sell':sell_signal
+        'sell':sell_signal,
+        'graph_url':graph_url
     }
 
 def calculate_gdc(stock_symbol, stock_data, window=5):
@@ -180,7 +197,7 @@ def calculate_gdc(stock_symbol, stock_data, window=5):
     sell_signal = ((target_stock_data['SMA50'].shift(1) > target_stock_data['SMA200'].shift(1)) &
                    (target_stock_data['SMA50'] < target_stock_data['SMA200']))
 
-    plot_graph(stock_symbol, 'GDC', window, target_stock_data, 'Price',[
+    graph_url = plot_graph(stock_symbol, 'GDC', window, target_stock_data, 'Price',[
         {
             'column':'Close', 
             'linestyle':'-',
@@ -203,11 +220,8 @@ def calculate_gdc(stock_symbol, stock_data, window=5):
 
     return {
         'indicator':'Golden/Death Cross',
-        
-        # 50-day MA crosses above 200-day MA
         'buy':buy_signal,
-        
-        # 50-day MA crosses below 200-day MA
-        'sell':sell_signal
+        'sell':sell_signal,
+        'graph_url':graph_url
     }
 

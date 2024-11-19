@@ -1,4 +1,7 @@
-PATH_TO_GRAPHS = '/home/ec2-user/projects/indicators_everywhere_venv/indicators_everywhere/backend/'
+
 S3_BUCKET_NAME = 'indicators-everywhere'
 S3_GRAPHS_PATH = 'graphs/'
-EC2_GRAPHS_PATH = 'graphs/'
+LOCAL_GRAPHS_PATH = 'graphs'
+PLOT_GRID = False
+PLOT_BOX = False
+S3_URL_TO_GRAPHS = f'https://{S3_BUCKET_NAME}.s3.ap-southeast-2.amazonaws.com/{S3_GRAPHS_PATH}'

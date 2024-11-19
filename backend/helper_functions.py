@@ -3,7 +3,9 @@ import matplotlib.font_manager as fm
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import os
-from constants import PATH_TO_GRAPHS, S3_GRAPHS_PATH, S3_BUCKET_NAME, EC2_GRAPHS_PATH
+from pathlib import Path
+
+from constants import S3_GRAPHS_PATH, S3_BUCKET_NAME, LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS
 
 # Load a custom font
 # plt.rcParams['font.family'] = 'custom_font'
@@ -18,36 +20,54 @@ plt.rcParams.update({
     'ytick.labelsize': 8
 })
 
-def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, column_1, label_1, column_2, label_2):
+def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, column1, column2):
     # Plotting
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
     # Plot OBV
-    ax1.plot(target_stock_data.index, target_stock_data[column_1], color='red', label=label_1)
-    ax1.set_xlabel(label_1)
-    ax1.set_ylabel('OBV', color='red')
-    ax1.tick_params(axis='y', labelcolor='red')
+    ax1.plot(
+        target_stock_data.index,
+        target_stock_data[column1['column']],
+        color=column1['color'], label=column1['label'],
+        linestyle=column1['linestyle']
+    )
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel(column1['label'])
+    ax1.tick_params(axis='y', labelcolor=column1['color'])
 
     # Create a secondary y-axis for price
     ax2 = ax1.twinx()
-    ax2.plot(target_stock_data.index, target_stock_data[column_2], color='blue', label=label_2)
-    ax2.set_ylabel(label_2, color='blue')
-    ax2.tick_params(axis='y', labelcolor='blue')
+    ax2.plot(
+        target_stock_data.index,
+        target_stock_data[column2['column']],
+        color=column2['color'], label=column2['label'],
+        linestyle=column2['linestyle']
+    )
+    ax2.set_xlabel('Date')
+    ax2.set_ylabel(column2['label'])
+    ax2.tick_params(axis='y', labelcolor=column2['color'])    
 
-    # Add legend outside the plot
+    # Customize graph style
     fig.legend(loc="upper right", bbox_to_anchor=(1,1), bbox_transform=ax1.transAxes)
+    plt.tight_layout()
+    ax1.grid(PLOT_GRID)
+    for spine in ax1.spines.values():
+        spine.set_visible(PLOT_BOX)
+    for spine in ax2.spines.values():
+        spine.set_visible(PLOT_BOX)
+    
+    # Get the directory of the graphs folder
+    script_directory = Path(__file__).parent
+    graphs_directory = script_directory / LOCAL_GRAPHS_PATH
 
-    # Add grid
-    # ax1.grid(True)
-    # plt.box(False)
-
-    # Save the graph
     file_name = f'{stock_symbol}_{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png'
-    graphs_directory = f'{EC2_GRAPHS_PATH}{file_name}'
-    plt.savefig(graphs_directory)
-    upload_image_to_s3(file_name)
+    graphs_directory.mkdir(parents=True, exist_ok=True) # Construct folder
+    plt.savefig(graphs_directory / file_name) # Save the graph image to the folder
+    upload_image_to_s3(graphs_directory, file_name) # Upload the image to the s3
 
     plt.close()
+
+    return f'{S3_URL_TO_GRAPHS}{file_name}'
 
 def plot_graph(stock_symbol, indicator_symbol, window, target_stock_data, ylabel, columns):
 
@@ -63,36 +83,36 @@ def plot_graph(stock_symbol, indicator_symbol, window, target_stock_data, ylabel
             color=column['color'],
             label=column['label']
         )
-
-    # Adding labels
     ax.set_xlabel('Date')
     ax.set_ylabel(ylabel)
 
-    # Add legend outside the plot
+    # Customize graph style
     fig.legend(loc="upper right", bbox_to_anchor=(1,1), bbox_transform=ax.transAxes)
-
-    # Adjust layout to make room for the legend
     plt.tight_layout()
+    ax.grid(PLOT_GRID)
+    for spine in ax.spines.values():
+        spine.set_visible(PLOT_BOX)
+    
+    # Get the directory of the graphs folder
+    script_directory = Path(__file__).parent
+    graphs_directory = script_directory / LOCAL_GRAPHS_PATH
 
-    # Adding grid
-    # ax.grid(True)
-    # plt.box(False)
-
-    # Save the graph 
     file_name = f'{stock_symbol}_{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png'
-    graphs_directory = f'{EC2_GRAPHS_PATH}{file_name}'
-    plt.savefig(graphs_directory)
-    upload_image_to_s3(file_name)
+    graphs_directory.mkdir(parents=True, exist_ok=True) # Construct folder
+    plt.savefig(graphs_directory / file_name) # Save the graph image to the folder
+    upload_image_to_s3(graphs_directory, file_name) # Upload the image to the s3
 
     plt.close()
 
-def upload_image_to_s3(file_name):
+    return f'{S3_URL_TO_GRAPHS}{file_name}'
+
+def upload_image_to_s3(graphs_directory, file_name):
     
     try:
         # Initialize the S3 client
         s3 = boto3.client('s3')
 
-        local_directory = f"{PATH_TO_GRAPHS}{file_name}"
+        local_directory = graphs_directory / file_name
         s3_directory = f"{S3_GRAPHS_PATH}{file_name}"
 
         # Upload the file
@@ -105,6 +125,10 @@ def upload_image_to_s3(file_name):
                 'ACL': 'public-read'
             }
         )
+
+        
+        if local_directory.exists():
+            local_directory.unlink()
     
     except FileNotFoundError:
         print("The file was not found.")
