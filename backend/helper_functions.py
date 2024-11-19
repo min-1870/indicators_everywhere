@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
-
+import boto3
+import os
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 # Load a custom font
 # plt.rcParams['font.family'] = 'custom_font'
@@ -72,3 +74,31 @@ def plot_graph(indicator_symbol, window, target_stock_data, ylabel, columns):
     # Save the graph
     plt.savefig(f'graphs/{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png')
     plt.close()
+
+def upload_image_to_s3(local_directory, bucket_name, s3_directory):
+    
+    try:
+        # Initialize the S3 client
+        s3 = boto3.client('s3')
+
+        file_name = local_directory.split('/')[-1]
+        s3_directory = f"{s3_directory}{file_name}"
+
+        # Upload the file
+        s3.upload_file(local_directory, bucket_name, s3_directory)
+    
+    except FileNotFoundError:
+        print("The file was not found.")
+    except NoCredentialsError:
+        print("Credentials not available.")
+    except PartialCredentialsError:
+        print("Incomplete credentials provided.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Usage
+# local_photo_directory = '/home/ec2-user/projects/indicators_everywhere_venv/indicators_everywhere/backend/BB_5_2024-11-18.png'
+# s3_bucket_name = 'indicators-everywhere'
+# s3_directory = 'graphs/'  # Optional: prefix for organizing in S3
+
+# upload_image_to_s3(local_photo_directory, s3_bucket_name, s3_directory)
