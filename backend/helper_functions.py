@@ -113,7 +113,9 @@ def upload_image_to_s3(graphs_directory, file_name):
         s3 = boto3.client('s3')
 
         local_directory = graphs_directory / file_name
+        print(local_directory)
         s3_directory = f"{S3_GRAPHS_PATH}{file_name}"
+        print(s3_directory)
 
         # Upload the file
         s3.upload_file(
