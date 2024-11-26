@@ -281,7 +281,7 @@
             function handleSubmit() {
                 const inputElement = document.getElementById('userInput');
                 const inputValue = inputElement.value;
-                fetch(`http://localhost:5000/api/data?input=${encodeURIComponent(inputValue)}`)
+                fetch(`http://172.31.12.173:5000/api/data?input=${encodeURIComponent(inputValue)}`)
                     .then(response => {
                         if (!response.ok) {
                             return response.json().then(errorData => {
