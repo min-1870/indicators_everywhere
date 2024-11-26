@@ -1,6 +1,6 @@
 import pandas_ta as ta
 from helper_functions import plot_graph, plot_two_graphs
-
+from constants import INDICATORS_DETAIL
 def calculate_obv(stock_symbol, stock_data, window=14):
     '''
     On-Balance Volume (OBV)
@@ -40,7 +40,8 @@ def calculate_obv(stock_symbol, stock_data, window=14):
     graph_url = plot_two_graphs(stock_symbol, 'OBV', window, target_stock_data, column1, column2)
     
     return {
-        'indicator':'On-Balance Volume (OBV)',
+        'name':INDICATORS_DETAIL['ovb']['name'],
+        'detail':INDICATORS_DETAIL['ovb']['detail'],
         'buy':buy_signal,
         'sell':sell_signal,
         'graph_url':graph_url
@@ -77,7 +78,8 @@ def calculate_rsi(stock_symbol, stock_data, window=14):
     ])
     
     return {
-        'indicator':'Relative Strength Index (RSI)',
+        'name':INDICATORS_DETAIL['rsi']['name'],
+        'detail':INDICATORS_DETAIL['rsi']['detail'],
         'buy':buy_signal,
         'sell':sell_signal,
         'graph_url':graph_url
@@ -123,7 +125,8 @@ def calculate_macd(stock_symbol, stock_data, window=14):
     ])
 
     return {
-        'indicator':'Moving Average Convergence Divergence (MACD)',
+        'name':INDICATORS_DETAIL['macd']['name'],
+        'detail':INDICATORS_DETAIL['macd']['detail'],
         'buy':buy_signal,
         'sell':sell_signal,
         'graph_url':graph_url
@@ -171,7 +174,8 @@ def calculate_bb(stock_symbol, stock_data, window=14):
     ])
 
     return {
-        'indicator':'Bollinger Bands',
+        'name':INDICATORS_DETAIL['bb']['name'],
+        'detail':INDICATORS_DETAIL['bb']['detail'],
         'buy':buy_signal,
         'sell':sell_signal,
         'graph_url':graph_url
@@ -219,7 +223,8 @@ def calculate_gdc(stock_symbol, stock_data, window=14):
     ])
 
     return {
-        'indicator':'Golden/Death Cross',
+        'name':INDICATORS_DETAIL['gdc']['name'],
+        'detail':INDICATORS_DETAIL['gdc']['detail'],
         'buy':buy_signal,
         'sell':sell_signal,
         'graph_url':graph_url
@@ -271,7 +276,8 @@ def calculate_so(stock_symbol, stock_data, window=14):
     ])
 
     return {
-        'indicator':'Stochastic Oscillator',
+        'name':INDICATORS_DETAIL['so']['name'],
+        'detail':INDICATORS_DETAIL['so']['detail'],
         'buy':buy_signal,
         'sell':sell_signal,
         'graph_url':graph_url

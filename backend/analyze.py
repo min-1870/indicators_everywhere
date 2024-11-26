@@ -34,7 +34,8 @@ def analyze_stock(stock_symbol, window=14):
         count = buy + sell
 
         return {
-            'indicator': signal['indicator'],
+            'name': signal['name'],
+            'detail': signal['detail'],
             'summary': summary,
             'count': count,
             'graph_url': signal['graph_url'],
@@ -84,13 +85,10 @@ def analyze_stock(stock_symbol, window=14):
         return result
 
     # Fetch history prices
-    try:
-        stock_data = fetch_data(stock_symbol, 300)
-    except:
-        raise ValueError("Failed to fetch finance history from Yahoo.")
-    
+    stock_data = fetch_data(stock_symbol, 300)
+
     if len(stock_data) < 200:
-        raise ValueError("The history is not long enough.")
+        raise ValueError("Failed to fetch the enough length of the finance history.")
             
     # Calculate Indicators
     calculated_signals = [
@@ -113,7 +111,7 @@ def analyze_stock(stock_symbol, window=14):
             
     return {
         'summary': summary,
-        'signals': indicators
+        'indicators': indicators
     }
     
 # print(analyze_stock('NVDA', 14))

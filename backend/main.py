@@ -4,20 +4,21 @@ from analyze import analyze_stock
 
 app = Flask(__name__)
 
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
     user_input = request.args.get('input', '')
-    # Process the input and send a response
+    
     try:
         result = analyze_stock(user_input)
         return jsonify(result), 200
     
+    except ValueError as ve:        
+        return jsonify({'error': str(ve)}), 400
+
     except Exception as e:
-        # Handle any exceptions that occur
-        result = {'error': str(e)}
-        return jsonify(result), 400
+        return jsonify({'error': 'Unhandled Exception' }), 400
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
