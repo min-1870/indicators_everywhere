@@ -4,7 +4,7 @@ from analyze import analyze_stock
 from helper_functions import upload_index
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 upload_index('index.html')
 
 @app.route('/api/data', methods=['GET'])
