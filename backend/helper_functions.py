@@ -122,7 +122,6 @@ def upload_image_to_s3(graphs_directory, file_name):
             s3_directory,
             ExtraArgs={
                 'ContentType': 'image/png',  
-                'ACL': 'public-read'
             }
         )
 
