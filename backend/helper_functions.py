@@ -63,7 +63,7 @@ def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, c
     file_name = f'{stock_symbol}_{indicator_symbol}_{window}_{target_stock_data.index[-1].strftime("%Y-%m-%d")}.png'
     graphs_directory.mkdir(parents=True, exist_ok=True) # Construct folder
     plt.savefig(graphs_directory / file_name) # Save the graph image to the folder
-    # upload_image_to_s3(graphs_directory, file_name) # Upload the image to the s3
+    upload_image_to_s3(graphs_directory, file_name) # Upload the image to the s3
 
     plt.close()
 
