@@ -165,3 +165,31 @@ def upload_index(file_name):
         print("Incomplete credentials provided.")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+def upload_favicon(file_name):
+    
+    try:
+        # Initialize the S3 client
+        s3 = boto3.client('s3')
+
+        local_directory = Path(__file__).parent / file_name
+        s3_directory = file_name
+
+        # Upload the file
+        s3.upload_file(
+            local_directory, 
+            S3_BUCKET_NAME, 
+            s3_directory,
+            ExtraArgs={
+                'ContentType': 'image/x-icon',  
+            }
+        )
+    
+    except FileNotFoundError:
+        print("The file was not found.")
+    except NoCredentialsError:
+        print("Credentials not available.")
+    except PartialCredentialsError:
+        print("Incomplete credentials provided.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
