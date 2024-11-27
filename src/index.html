@@ -6,6 +6,7 @@
         <title>last last</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="icon" href="indicators_everywhere/favicon.ico" type="image/x-icon">
         <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <style>
             body {
@@ -281,7 +282,7 @@
             function handleSubmit() {
                 const inputElement = document.getElementById('userInput');
                 const inputValue = inputElement.value;
-                fetch(`http://13.236.178.174:5000/api/data?input=${encodeURIComponent(inputValue)}`)
+                fetch(`http://13.239.132.44:5000/api/data?input=${encodeURIComponent(inputValue)}`)
                     .then(response => {
                         if (!response.ok) {
                             return response.json().then(errorData => {
