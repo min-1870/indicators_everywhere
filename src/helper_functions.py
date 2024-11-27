@@ -5,7 +5,7 @@ from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import os
 from pathlib import Path
 
-from constants import S3_GRAPHS_PATH, S3_BUCKET_NAME, LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS, S3_PROJECT_PATH
+from constants import S3_GRAPHS_PATH, S3_BUCKET_NAME, LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS
 
 # Load a custom font
 # plt.rcParams['font.family'] = 'custom_font'
@@ -145,7 +145,7 @@ def upload_index(file_name):
         s3 = boto3.client('s3')
 
         local_directory = Path(__file__).parent / file_name
-        s3_directory = f'{S3_PROJECT_PATH}{file_name}'
+        s3_directory = file_name
 
         # Upload the file
         s3.upload_file(
@@ -173,7 +173,7 @@ def upload_favicon(file_name):
         s3 = boto3.client('s3')
 
         local_directory = Path(__file__).parent / file_name
-        s3_directory = f'{S3_PROJECT_PATH}{file_name}'
+        s3_directory = file_name
 
         # Upload the file
         s3.upload_file(
