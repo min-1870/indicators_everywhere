@@ -5,8 +5,9 @@ from helper_functions import upload_index, upload_favicon
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
-upload_index('index.html')
-upload_favicon('favicon.ico')
+
+# upload_index('index.html')
+# upload_favicon('favicon.ico')
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
@@ -25,6 +26,5 @@ def get_data():
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
-        port=443,
-        ssl_context=('/etc/letsencrypt/live/indicatorseverywhere.min1870.com/fullchain.pem', '/etc/letsencrypt/live/indicatorseverywhere.min1870.com/privkey.pem')
+        port=5000,
     )
