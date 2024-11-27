@@ -23,4 +23,8 @@ def get_data():
         return jsonify({'error': 'Unhandled Exception' }), 400
 
 if __name__ == '__main__':
-    app.run(ssl_context=('cert.pem', 'key.pem'), host='0.0.0.0', port=5000)
+    app.run(
+        host='0.0.0.0',
+        port=443,
+        ssl_context=('/etc/letsencrypt/live/indicatorseverywhere.min1870.com/fullchain.pem', '/etc/letsencrypt/live/indicatorseverywhere.min1870.com/privkey.pem')
+    )
