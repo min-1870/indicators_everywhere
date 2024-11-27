@@ -1,6 +1,7 @@
 
-S3_BUCKET_NAME = 'indicators-everywhere'
-S3_GRAPHS_PATH = 'graphs/'
+S3_BUCKET_NAME = 'bucket-xntfij'
+S3_PROJECT_PATH = 'indicator_everywhere/'
+S3_GRAPHS_PATH = f'{S3_PROJECT_PATH}graphs/'
 LOCAL_GRAPHS_PATH = 'graphs'
 PLOT_GRID = True
 PLOT_BOX = True
