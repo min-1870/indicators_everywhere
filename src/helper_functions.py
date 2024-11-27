@@ -145,7 +145,7 @@ def upload_index(file_name):
         s3 = boto3.client('s3')
 
         local_directory = Path(__file__).parent / file_name
-        s3_directory = S3_PROJECT_PATH / file_name
+        s3_directory = f'{S3_PROJECT_PATH}{file_name}'
 
         # Upload the file
         s3.upload_file(
@@ -173,7 +173,7 @@ def upload_favicon(file_name):
         s3 = boto3.client('s3')
 
         local_directory = Path(__file__).parent / file_name
-        s3_directory = S3_PROJECT_PATH / file_name
+        s3_directory = f'{S3_PROJECT_PATH}{file_name}'
 
         # Upload the file
         s3.upload_file(
