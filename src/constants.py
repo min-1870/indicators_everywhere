@@ -2,6 +2,8 @@
 S3_BUCKET_NAME = 'indicators-everywhere'
 S3_GRAPHS_PATH = 'graphs/'
 LOCAL_GRAPHS_PATH = 'graphs'
+US_STOCK_FILE_NAME = 'us_stock.json'
+TICKERS_RECOMMEND_NUMBER = 20
 PLOT_GRID = True
 PLOT_BOX = True
 S3_URL_TO_GRAPHS = f'https://{S3_BUCKET_NAME}.s3.ap-southeast-2.amazonaws.com/{S3_GRAPHS_PATH}'
@@ -29,5 +31,13 @@ INDICATORS_DETAIL = {
     'so': {
         'name': 'Stochastic Oscillator',
         'detail': "The Stochastic Oscillator is a momentum indicator that compares a security's closing price to its price range over a specific period of time. It consists of two lines: %K and %D. The %K line represents the current closing price relative to the price range, while the %D line is a moving average of the %K line. The Stochastic Oscillator ranges from 0 to 100 and is typically used to identify overbought (above 80) and oversold (below 20) conditions, as well as potential price reversals when the lines cross.",
+    },
+    'atr': {
+        'name': 'Average True Range',
+        'detail': "The Average True Range (ATR) is a volatility indicator that measures market volatility by decomposing the entire range of an asset price for that period. ATR does not indicate price direction, but rather the degree of price movement or volatility. A higher ATR value indicates higher volatility, while a lower ATR value indicates lower volatility. Traders use ATR to assess the potential risk or reward of entering or exiting a trade and to set stop-loss levels that adjust to volatility.",
+    },
+    'frl': {
+        'name': 'Fibonacci Retracement Levels',
+        'detail': "Fibonacci Retracement Levels are a popular technical analysis tool used to identify potential support and resistance levels based on the Fibonacci sequence. The key retracement levels (23.6%, 38.2%, 50%, 61.8%, and 100%) are derived from the Fibonacci sequence and are used to predict potential price reversals during a pullback in a trending market. Traders use these levels to identify buying and selling opportunities when the price retraces to these levels and shows signs of reversal or continuation of the trend.",
     }
 }

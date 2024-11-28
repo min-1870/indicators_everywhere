@@ -19,10 +19,10 @@ def calculate_obv(stock_symbol, stock_data, window=14):
     target_stock_data = stock_data.tail(window)
 
     # OBV is trending up while price is flat or rising
-    buy_signal = (target_stock_data['OBV_trend'] > 0) & (target_stock_data['Price_trend'] >= 0)
+    buy_signal = ((target_stock_data['OBV_trend'] > 0) & (target_stock_data['Price_trend'] >= 0)).tolist()
 
     # OBV is trending down while price is flat or falling
-    sell_signal = (target_stock_data['OBV_trend'] < 0) & (target_stock_data['Price_trend'] <= 0)
+    sell_signal = ((target_stock_data['OBV_trend'] < 0) & (target_stock_data['Price_trend'] <= 0)).tolist()
 
     column1 = {
         'column':'OBV',
@@ -63,19 +63,35 @@ def calculate_rsi(stock_symbol, stock_data, window=14):
     target_stock_data = stock_data.tail(window)
 
     # RSI < 30 (oversold condition)
-    buy_signal = (target_stock_data['RSI'] < 30)
+    buy_signal = (target_stock_data['RSI'] < 30).tolist()
 
     # RSI > 70 (overbought condition)
-    sell_signal = (target_stock_data['RSI'] > 70)
+    sell_signal = (target_stock_data['RSI'] > 70).tolist()
 
-    graph_url = plot_graph(stock_symbol, 'RSI', window, target_stock_data, 'RSI',[
+    graph_url = plot_graph(stock_symbol, 'RSI', window, target_stock_data, 'RSI',
+    [
         {
             'column':'RSI', 
             'linestyle':'-',
             'color':'red',
             'label':'RSI'
         }
-    ])
+    ],
+    [
+        {
+            'y':30, 
+            'linestyle':'--',
+            'color':'yellow',
+            'label':'Low RSI'
+        },
+        {
+            'y':70, 
+            'linestyle':'--',
+            'color':'blue',
+            'label':'High RSI'
+        }
+    ]
+    )
     
     return {
         'name':INDICATORS_DETAIL['rsi']['name'],
@@ -102,12 +118,12 @@ def calculate_macd(stock_symbol, stock_data, window=14):
     # MACD line crosses above the signal line
     buy_signal = (
         (target_stock_data['MACD'].shift(1) < target_stock_data['Signal_Line'].shift(1)) & 
-        (target_stock_data['MACD'] > target_stock_data['Signal_Line']))
+        (target_stock_data['MACD'] > target_stock_data['Signal_Line'])).tolist()
 
     # MACD line crosses below the signal line
     sell_signal = (
         (target_stock_data['MACD'].shift(1) > target_stock_data['Signal_Line'].shift(1)) & 
-        (target_stock_data['MACD'] < target_stock_data['Signal_Line']))
+        (target_stock_data['MACD'] < target_stock_data['Signal_Line'])).tolist()
 
     graph_url = plot_graph(stock_symbol, 'MACD', window, target_stock_data, 'MACD',[
         {
@@ -147,10 +163,10 @@ def calculate_bb(stock_symbol, stock_data, window=14):
     target_stock_data = stock_data.tail(window)
 
     # Price touches or goes below the lower band
-    buy_signal = (target_stock_data['Lower_BB'] >= target_stock_data['Close'])
+    buy_signal = (target_stock_data['Lower_BB'] >= target_stock_data['Close']).tolist()
 
     # Price touches or goes above the upper band
-    sell_signal = (target_stock_data['Upper_BB'] <= target_stock_data['Close'])
+    sell_signal = (target_stock_data['Upper_BB'] <= target_stock_data['Close']).tolist()
 
     graph_url = plot_graph(stock_symbol, 'BB', window, target_stock_data, 'Price',[
         {
@@ -195,11 +211,11 @@ def calculate_gdc(stock_symbol, stock_data, window=14):
     
     # 50-day MA crosses above 200-day MA
     buy_signal = ((target_stock_data['SMA50'].shift(1) < target_stock_data['SMA200'].shift(1)) &
-                  (target_stock_data['SMA50'] > target_stock_data['SMA200']))
+                  (target_stock_data['SMA50'] > target_stock_data['SMA200'])).tolist()
 
     # 50-day MA crosses below 200-day MA
     sell_signal = ((target_stock_data['SMA50'].shift(1) > target_stock_data['SMA200'].shift(1)) &
-                   (target_stock_data['SMA50'] < target_stock_data['SMA200']))
+                   (target_stock_data['SMA50'] < target_stock_data['SMA200'])).tolist()
 
     graph_url = plot_graph(stock_symbol, 'GDC', window, target_stock_data, 'Price',[
         {
@@ -252,13 +268,13 @@ def calculate_so(stock_symbol, stock_data, window=14):
     buy_signal = ((target_stock_data['%K'].shift(1) < target_stock_data['%D'].shift(1)) &
                   (target_stock_data['%K'] > target_stock_data['%D']) &
                   (target_stock_data['%K'] < 20) &
-                  (target_stock_data['%D'] < 20))
+                  (target_stock_data['%D'] < 20)).tolist()
 
     # Sell signal
     sell_signal = ((target_stock_data['%K'].shift(1) > target_stock_data['%D'].shift(1)) &
                    (target_stock_data['%K'] < target_stock_data['%D']) &
                    (target_stock_data['%K'] > 80) &
-                   (target_stock_data['%D'] > 80))
+                   (target_stock_data['%D'] > 80)).tolist()
 
     graph_url = plot_graph(stock_symbol, 'SO', window, target_stock_data, 'Stochastic Oscillator', [
         {
@@ -278,6 +294,167 @@ def calculate_so(stock_symbol, stock_data, window=14):
     return {
         'name':INDICATORS_DETAIL['so']['name'],
         'detail':INDICATORS_DETAIL['so']['detail'],
+        'buy':buy_signal,
+        'sell':sell_signal,
+        'graph_url':graph_url
+    }
+
+def calculate_atr(stock_symbol, stock_data, window=14):
+    '''
+    Average True Range (ATR) Indicator
+    Buy: ATR increases significantly, indicating potential for high volatility
+    Sell: ATR decreases, indicating low volatility
+    '''
+
+    # Calculate ATR
+    stock_data['ATR'] = ta.atr(stock_data['High'], stock_data['Low'], stock_data['Close'], window=window)
+
+    # Calculate ATR trend (change in ATR over the window period)
+    stock_data['ATR_trend'] = stock_data['ATR'].diff()
+
+    target_stock_data = stock_data.tail(window)
+    
+    # Buy: ATR increases significantly (relative increase)
+    buy_signal = (target_stock_data['ATR_trend'] > 0.1 * target_stock_data['ATR'].shift(1)).tolist()
+
+    # Sell: ATR decreases (relative decrease)
+    sell_signal = (target_stock_data['ATR_trend'] < -0.1 * target_stock_data['ATR'].shift(1)).tolist()
+
+    graph_url = plot_graph(stock_symbol, 'ATR', window, target_stock_data, 'ATR',[
+        {
+            'column':'ATR', 
+            'linestyle':'-',
+            'color':'red',
+            'label':'ATR'
+        }
+    ])
+    
+    return {
+        'name':INDICATORS_DETAIL['atr']['name'],
+        'detail':INDICATORS_DETAIL['atr']['detail'],
+        'buy':buy_signal,
+        'sell':sell_signal,
+        'graph_url':graph_url
+    }
+
+def calculate_frl(stock_symbol, stock_data, window=14):
+    '''
+    Fibonacci Retracement Levels
+    Buy: Price retraces to a key Fibonacci level (23.6%, 38.2%, 50%, or 61.8%) and bounces back.
+    Sell: Price fails to hold a retracement level and moves lower.
+    '''
+
+    # Calculate the highest high and the lowest low in the window
+    highest_high = stock_data['High'].tail(window).max()
+    lowest_low = stock_data['Low'].tail(window).min()
+
+    # Calculate Fibonacci levels
+    diff = highest_high - lowest_low
+    fib_levels = {
+        'Level_0': highest_high,
+        'Level_236': highest_high - 0.236 * diff,  # 23.6% Fibonacci level
+        'Level_382': highest_high - 0.382 * diff,  # 38.2% Fibonacci level
+        'Level_50': highest_high - 0.5 * diff,     # 50% Fibonacci level
+        'Level_618': highest_high - 0.618 * diff,  # 61.8% Fibonacci level
+        'Level_100': lowest_low
+    }
+
+    # Get the most recent price data for the window
+    target_stock_data = stock_data.tail(window)
+
+    # Initialize signals
+    buy_signal = []
+    sell_signal = []
+    
+    # Loop through the data to check for signals
+    for i in range(len(target_stock_data)):
+        
+        current_price = target_stock_data['Close'].iloc[i]
+        previous_price = target_stock_data['Close'].iloc[i-1]
+        # Buy signal: price bounces from a key Fibonacci level
+        if (current_price > fib_levels['Level_236'] and
+            previous_price < fib_levels['Level_236']):
+            buy_signal.append(True)
+        elif (current_price > fib_levels['Level_382'] and
+            previous_price < fib_levels['Level_382']):
+            buy_signal.append(True)
+        elif (current_price > fib_levels['Level_50'] and
+              previous_price < fib_levels['Level_50']):
+            buy_signal.append(True)
+        elif (current_price > fib_levels['Level_618'] and
+              previous_price < fib_levels['Level_618']):
+            buy_signal.append(True)
+        else:
+            buy_signal.append(False)
+        
+        # Sell signal: price fails to hold a Fibonacci level and moves lower
+        if (current_price > fib_levels['Level_236'] and
+            previous_price < fib_levels['Level_236']):
+            sell_signal.append(True)
+        elif (current_price > fib_levels['Level_382'] and
+            previous_price < fib_levels['Level_382']):
+            sell_signal.append(True)
+        elif (current_price < fib_levels['Level_50'] and
+              previous_price > fib_levels['Level_50']):
+            sell_signal.append(True)
+        elif (current_price < fib_levels['Level_618'] and
+              previous_price > fib_levels['Level_618']):
+            sell_signal.append(True)
+        else:
+            sell_signal.append(False)    
+
+    graph_url = plot_graph(stock_symbol, 'FIB', window, target_stock_data, 'Price',
+        [
+            {
+            'column':'Close', 
+            'linestyle':'-',
+            'color':'red',
+            'label':'Price'
+            }
+        ],
+        [
+            {
+            'y':fib_levels['Level_0'], 
+            'linestyle':'--',
+            'color':'yellow',
+            'label':'Level 0'
+            },
+            {
+            'y':fib_levels['Level_236'], 
+            'linestyle':'--',
+            'color':'orange',
+            'label':'Level 236'
+            },
+            {
+            'y':fib_levels['Level_382'], 
+            'linestyle':'--',
+            'color':'green',
+            'label':'Level 382'
+            },
+            {
+            'y':fib_levels['Level_50'], 
+            'linestyle':'--',
+            'color':'blue',
+            'label':'Level 50'
+            },
+            {
+            'y':fib_levels['Level_618'], 
+            'linestyle':'--',
+            'color':'purple',
+            'label':'Level 618'
+            },
+            {
+            'y':fib_levels['Level_100'], 
+            'linestyle':'--',
+            'color':'black',
+            'label':'Level 100'
+            },
+        ],
+    )
+
+    return {
+        'name':INDICATORS_DETAIL['frl']['name'],
+        'detail':INDICATORS_DETAIL['frl']['detail'],
         'buy':buy_signal,
         'sell':sell_signal,
         'graph_url':graph_url

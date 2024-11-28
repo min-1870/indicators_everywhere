@@ -85,10 +85,38 @@
 
             #home {
                 display: flex;
+                flex-direction: column;
+                align-items: center;
                 color:#606B88;
                 font-size:15px;
                 margin: 10px;
                 font-weight: 300;
+            }
+            #tickers {
+                display: flex;
+                flex-wrap: wrap;
+                width: 550px;
+                justify-content:center;
+                margin: 50px;
+            }
+            .ticker {
+                padding: 10px;
+                margin: 6px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #fff;  
+                border-width: 1px;
+                border-style: solid;
+                border-color: #E6E6E6;
+                border-radius: 50px;   
+                box-shadow: 0px 0px 22px -20px rgba(0,0,0,0.75);
+                font-size:15px;
+                font-weight: 300;
+                font-family: "Montserrat", sans-serif;
+            }
+            .ticker:hover {
+                background-color: #f4f4f4;  
             }
 
             #result {
@@ -154,6 +182,9 @@
                 font-family: "Montserrat", sans-serif;
                 font-weight: 500;
             }
+            .indicator-button:hover {
+                background-color: #f4f4f4;  
+            }
             #indicator-button-summary {
                 font-size:16px;
                 display:flex;
@@ -167,6 +198,8 @@
             }
             #indicator-button-detail-content{
                 display: none;
+                flex-direction: column;
+                align-items: flex-start;
                 width: 800px;
                 border-style: solid;
                 border-color: #E6E6E6;
@@ -226,7 +259,8 @@
         </div>
         
         <div id="home">
-            <p>Popular tickers are..  NVDA, MSFT, TSLA, AAPV, LULU.. and more</p>
+            <p>Here are some tickers for you to try..</p>
+            <div id="tickers"></div>
         </div>
 
         <div id="indicator-button-detail" >
@@ -243,6 +277,43 @@
         </div>
 
         <script>
+            
+            fetch(`https://indicatorseverywhere.min1870.com/api/recommend`)
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error || 'Unknown error occurred');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayRecommendTickers(data)
+            })
+            .catch(error => {
+                hideAllExcept('error')
+                displayError(error)                  
+            });
+            
+            function displayRecommendTickers(tickers){
+                const tickersDIV = document.getElementById('tickers');
+                tickers.forEach(ticker => {
+                    const tickerDiv = document.createElement('button');
+                    tickerDiv.className = `ticker`;
+                    tickerDiv.innerHTML = `
+                        <p>${ticker}</p>
+                    `;
+                    tickerDiv.addEventListener('click', () => {
+                        hideAllExcept('loading')
+                        document.getElementById('userInput').value = ticker
+                        handleSubmit()
+                    });
+                    tickersDIV.appendChild(tickerDiv)
+                });
+
+            };
+
+
             function hideAllExcept(id){
                 const detail = document.getElementById('indicator-button-detail-content');
                 detail.style.display = 'none'
@@ -256,7 +327,7 @@
                 error.style.display = 'none';
                 
                 const except = document.getElementById(id);
-                except.style.display = "block"
+                except.style.display = "flex"
             }
 
             function displayError(error_message){
@@ -282,26 +353,25 @@
             function handleSubmit() {
                 const inputElement = document.getElementById('userInput');
                 const inputValue = inputElement.value;
-                fetch(`https://indicatorseverywhere.min1870.com/api/data?input=${encodeURIComponent(inputValue)}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.json().then(errorData => {
-                                throw new Error(errorData.error || 'Unknown error occurred');
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        hideAllExcept('result')
-                        displaySummary(data.summary)
-                        displayIndicators(data.indicators)
-                        
-                    })
-                    .catch(error => {
-                        hideAllExcept('error')
-                        displayError(error)
-                        console.log(error)                       
-                    });
+                fetch(`https://indicatorseverywhere.min1870.com/api/analyze?input=${encodeURIComponent(inputValue)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.error || 'Unknown error occurred');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    hideAllExcept('result')
+                    displaySummary(data.summary)
+                    displayIndicators(data.indicators)
+                    
+                })
+                .catch(error => {
+                    hideAllExcept('error')
+                    displayError(error)                  
+                });
                 
             }
 
@@ -338,7 +408,7 @@
                         <img src="${indicator.graph_url}" width="252" height="126">
                         <div id="indicator-button-summary">
                             <div>
-                                <p>Overall Signal</p>
+                                <p>Latest Signal</p>
                                 <p id="${indicator.summary}">${indicator.summary}</p>
                             </div>
                             <p style="font-size:10px;color:#606B88;margin-left:60px;">Click for detail..</p>

@@ -1,43 +1,30 @@
 from fetch import fetch_data
-from indicators import calculate_bb, calculate_gdc, calculate_macd, calculate_obv, calculate_rsi, calculate_so
+from indicators import *
 
 def analyze_stock(stock_symbol, window=14):
 
     def summarize_signal(dates, signal):
 
-        buy = 0
-        sell = 0
-        neutral = 0
-
+        latest_signal = 'Neutral'
         history = []
+
         for i in range(len(signal['buy'])):
             date = dates[i].strftime('%Y-%m-%d')
-            if signal['buy'].iloc[i]:
+            if signal['buy'][i]:
                 history.append(f'Buy - {date}')
-                buy += 1
+                latest_signal = 'Buy'
 
-            elif signal['sell'].iloc[i]:
+            elif signal['sell'][i]:
                 history.append(f'Sell - {date}')
-                sell += 1
+                latest_signal = 'Sell'
             
             else:
                 history.append(f'Neutral - {date}')
-                neutral += 1
-
-        if buy > 0 and sell == 0:
-            summary = 'Buy'
-        elif sell > 0 and buy == 0:
-            summary = 'Sell'
-        else:
-            summary = 'Neutral'
-
-        count = buy + sell
 
         return {
             'name': signal['name'],
             'detail': signal['detail'],
-            'summary': summary,
-            'count': count,
+            'summary': latest_signal,
             'graph_url': signal['graph_url'],
             'history': history
         }
@@ -97,7 +84,9 @@ def analyze_stock(stock_symbol, window=14):
         calculate_macd(stock_symbol, stock_data, window),
         calculate_obv(stock_symbol, stock_data, window),
         calculate_rsi(stock_symbol, stock_data, window),
-        calculate_so(stock_symbol, stock_data, window)
+        calculate_so(stock_symbol, stock_data, window),
+        calculate_atr(stock_symbol, stock_data, window),
+        calculate_frl(stock_symbol, stock_data, window),
     ]
     
     # Summarize the calculated signals
@@ -114,4 +103,3 @@ def analyze_stock(stock_symbol, window=14):
         'indicators': indicators
     }
     
-# print(analyze_stock('NVDA', 14))

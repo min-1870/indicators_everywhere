@@ -24,7 +24,7 @@ def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, c
     # Plotting
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
-    # Plot OBV
+    # Create a y-axis
     ax1.plot(
         target_stock_data.index,
         target_stock_data[column1['column']],
@@ -35,7 +35,7 @@ def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, c
     ax1.set_ylabel(column1['label'])
     ax1.tick_params(axis='y', labelcolor=column1['color'])
 
-    # Create a secondary y-axis for price
+    # Create a secondary y-axis
     ax2 = ax1.twinx()
     ax2.plot(
         target_stock_data.index,
@@ -69,10 +69,20 @@ def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, c
 
     return f'{S3_URL_TO_GRAPHS}{file_name}'
 
-def plot_graph(stock_symbol, indicator_symbol, window, target_stock_data, ylabel, columns):
+def plot_graph(stock_symbol, indicator_symbol, window, target_stock_data, ylabel, columns, lines=False):
 
     # Create a new figure and axis
     fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Plot the Horizontal Lines
+    if lines:
+        for line in lines:
+            ax.axhline(
+                y=line['y'], 
+                linestyle=line['linestyle'], 
+                color=line['color'], 
+                label=line['label']
+            )
         
     # Plot the Main graph
     for column in columns:
