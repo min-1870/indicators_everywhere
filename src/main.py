@@ -1,13 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  
 from analyze import analyze_stock
-from helper_functions import upload_index, upload_favicon
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
-
-# upload_index('index.html')
-# upload_favicon('favicon.ico')
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
