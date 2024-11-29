@@ -46,20 +46,11 @@ jobs:
     - name: Kill the server session
       run: screen -S indicators_everywhere -X quit || true
 
-    - name: Create the server session
-      run: screen -S indicators_everywhere
-
-    - name: Attach to the server session
-      run: screen -r indicators_everywhere
-    
-    - name: Move to repository path
-      run: cd /home/ec2-user/indicators_everywhere/
-    
-    - name: Pull the latest code
-      run: git pull
-
-    - name: Install the necessary packages
-      run: pip install -r requirements.txt
-    
-    - name: Run the gunicorn server
-      run: gunicorn -d 2 src.app.app:app
+    - name: Create and detach from the server session
+      run: |
+        screen -dmS indicators_everywhere bash -c "
+          cd /home/ec2-user/indicators_everywhere/ &&
+          git pull &&
+          pip install -r requirements.txt &&
+          gunicorn src.app.app:app
+        "
