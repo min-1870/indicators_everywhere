@@ -30,6 +30,9 @@ jobs:
         ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@52.62.115.2 << EOF
           # Kill existing screen session if it exists
           screen -S indicators_everywhere -X quit || true
+          
+          # Wait for the session to be fully terminated
+          sleep 2
 
           # Create new detached screen session
           screen -S indicators_everywhere -d -m
@@ -45,6 +48,9 @@ jobs:
 
           # Kill existing server
           screen -S indicators_everywhere -X stuff $'pkill gunicorn\n'
+          
+          # Wait for the port to be released
+          screen -S indicators_everywhere -X stuff $'sleep 5\n'
 
           # Run the server again
           screen -S indicators_everywhere -X stuff $'gunicorn -w 2 src.app.app:app\n'
