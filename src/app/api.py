@@ -2,7 +2,7 @@ import yfinance as yf
 from datetime import datetime, timedelta
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
-from constants import S3_GRAPHS_PATH, S3_BUCKET_NAME, DEBUG
+from src.app.constants import S3_GRAPHS_PATH, S3_BUCKET_NAME, DEBUG
 
 
 def fetch_data(symbol, duration):

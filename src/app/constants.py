@@ -2,7 +2,7 @@ S3_BUCKET_NAME = "indicators-everywhere"
 S3_GRAPHS_PATH = "graphs/"
 LOCAL_GRAPHS_PATH = "graphs"
 US_STOCK_FILE_NAME = "us_stock.json"
-DEBUG = True
+DEBUG = False
 TICKERS_RECOMMEND_NUMBER = 20
 PLOT_GRID = True
 PLOT_BOX = True
@@ -18,7 +18,7 @@ INDICATORS_DETAIL = {
          the day's volume when the price closes lower. The idea behind OBV is that
          changes in volume often precede price movements, providing insights into
          potential trends. Traders use OBV to confirm trends or identify divergences
-         between volume and price action, which can signal potential reversals."""
+         between volume and price action, which can signal potential reversals.""",
     },
     "rsi": {
         "name": "Relative Strength Index",
@@ -29,7 +29,7 @@ INDICATORS_DETAIL = {
          suggesting a potential reversal or correction, while an RSI below 30
          is considered oversold, indicating a potential buying opportunity.
          RSI helps traders gauge the strength of a price trend and identify
-         potential reversals."""
+         potential reversals.""",
     },
     "macd": {
         "name": "Moving Average Convergence Divergence",
@@ -39,7 +39,7 @@ INDICATORS_DETAIL = {
          exponential moving average (EMA) from the 12-period EMA. A 9-period EMA of
          the MACD line, called the 'signal line', is then plotted on top of the MACD
          line. MACD is used to identify potential buy and sell signals through
-         crossovers, divergences, and overbought/oversold conditions."""
+         crossovers, divergences, and overbought/oversold conditions.""",
     },
     "bb": {
         "name": "Bollinger Bands",
@@ -50,7 +50,7 @@ INDICATORS_DETAIL = {
          with wider bands indicating higher volatility and narrower bands
          indicating lower volatility. Bollinger Bands help traders identify
          overbought and oversold conditions, as well as potential breakout
-         opportunities."""
+         opportunities.""",
     },
     "gdc": {
         "name": "Golden/Death Cross",
@@ -61,7 +61,7 @@ INDICATORS_DETAIL = {
          potential bullish trend. A Death Cross occurs when the short-term moving
          average crosses below the long-term moving average, signaling a potential
          bearish trend. These crosses are often used to identify long-term trend
-         changes."""
+         changes.""",
     },
     "so": {
         "name": "Stochastic Oscillator",
@@ -71,7 +71,7 @@ INDICATORS_DETAIL = {
          closing price relative to the price range, while the %D line is a moving
          average of the %K line. The Stochastic Oscillator ranges from 0 to 100 and is
          typically used to identify overbought (above 80) and oversold (below 20)
-         conditions, as well as potential price reversals when the lines cross."""
+         conditions, as well as potential price reversals when the lines cross.""",
     },
     "atr": {
         "name": "Average True Range",
@@ -81,7 +81,7 @@ INDICATORS_DETAIL = {
          the degree of price movement or volatility. A higher ATR value indicates
          higher volatility, while a lower ATR value indicates lower volatility.
          Traders use ATR to assess the potential risk or reward of entering or
-         exiting a trade and to set stop-loss levels that adjust to volatility."""
+         exiting a trade and to set stop-loss levels that adjust to volatility.""",
     },
     "frl": {
         "name": "Fibonacci Retracement Levels",
@@ -92,6 +92,6 @@ INDICATORS_DETAIL = {
          potential price reversals during a pullback in a trending market. Traders use
          these levels to identify buying and selling opportunities when the price
          retraces to these levels and shows signs of reversal or continuation of the
-         trend."""
+         trend.""",
     },
 }

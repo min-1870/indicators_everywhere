@@ -1,4 +1,4 @@
-from constants import US_STOCK_FILE_NAME
+from src.app.constants import US_STOCK_FILE_NAME
 from pathlib import Path
 import json
 import random
@@ -11,6 +11,9 @@ def recommend_tickers(number):
     """
 
     try:
+        if number > 20:
+            raise ValueError("Requested to many number of tickers for recommendation.")
+
         with open(Path(__file__).parent / US_STOCK_FILE_NAME, "r") as file:
             all_tickers = json.load(file)
 

@@ -1,5 +1,5 @@
-from api import fetch_data
-import calculators
+from src.app.api import fetch_data
+from src.app import calculators
 
 
 def analyze_stock(stock_symbol, window=14):

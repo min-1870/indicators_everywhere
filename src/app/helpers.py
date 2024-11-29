@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
-from api import upload_image_to_s3
-from constants import LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS, DEBUG
+from src.app.api import upload_image_to_s3
+from src.app.constants import LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS, DEBUG
 
 plt.rcParams.update(
     {
@@ -60,12 +60,12 @@ def plot_two_graphs(
     script_directory = Path(__file__).parent
     graphs_directory = script_directory / LOCAL_GRAPHS_PATH
 
-    file_name = f'''
-        {stock_symbol}_
-        {indicator_symbol}_
-        {window}_
-        {target_stock_data.index[-1].strftime("%Y-%m-%d")}.png
-    '''
+    file_name = (
+        f"{stock_symbol}_"
+        f"{indicator_symbol}_"
+        f"{window}_"
+        f"{target_stock_data.index[-1].strftime('%Y-%m-%d')}.png"
+    )
     graphs_directory.mkdir(parents=True, exist_ok=True)  # Construct folder
     plt.savefig(graphs_directory / file_name)  # Save the graph image to the folder
     upload_image_to_s3(graphs_directory, file_name)  # Upload the image to the s3
@@ -123,12 +123,12 @@ def plot_graph(
     script_directory = Path(__file__).parent
     graphs_directory = script_directory / LOCAL_GRAPHS_PATH
 
-    file_name = f'''
-        {stock_symbol}_
-        {indicator_symbol}_
-        {window}_
-        {target_stock_data.index[-1].strftime("%Y-%m-%d")}.png
-    '''
+    file_name = (
+        f"{stock_symbol}_"
+        f"{indicator_symbol}_"
+        f"{window}_"
+        f"{target_stock_data.index[-1].strftime('%Y-%m-%d')}.png"
+    )
     graphs_directory.mkdir(parents=True, exist_ok=True)  # Construct folder
     plt.savefig(graphs_directory / file_name)  # Save the graph image to the folder
     upload_image_to_s3(graphs_directory, file_name)  # Upload the image to the s3
