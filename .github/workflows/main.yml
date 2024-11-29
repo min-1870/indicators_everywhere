@@ -1,24 +1,3 @@
-# name: main
-
-# on:
-#   push:
-#     branches:
-#       - main  # Trigger when you push to main branch
-#   pull_request:
-#     branches:
-#       - main  # Trigger when you pull from main branch
-
-# jobs:
-#   test:
-#     uses: ./.github/workflows/test.yml
-
-#   lint:
-#     uses: ./.github/workflows/lint.yml
-
-#   deploy:
-#     needs: [test, lint]
-#     uses: ./.github/workflows/deploy.yml
-
 name: main
 
 on:
@@ -52,6 +31,9 @@ jobs:
         ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@52.62.115.2 << EOF
           # Kill existing screen session if it exists
           screen -S indicators_everywhere -X quit || true
+
+          # Kill existing server
+          pkill gunicorn
 
           # Create new detached screen session
           screen -S indicators_everywhere -d -m
