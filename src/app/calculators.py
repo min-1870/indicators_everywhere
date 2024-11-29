@@ -12,7 +12,9 @@ def calculate_obv(stock_symbol, stock_data, window=14):
 
     # Calculate indicator values
     target_stock_data = stock_data.tail(window * 2).copy()
-    target_stock_data["OBV"] = ta.obv(target_stock_data["Close"], target_stock_data["Volume"])
+    target_stock_data["OBV"] = ta.obv(
+        target_stock_data["Close"], target_stock_data["Volume"]
+    )
     target_stock_data["OBV_trend"] = target_stock_data["OBV"].diff(window)
     target_stock_data["Price_trend"] = target_stock_data["Close"].diff(window)
     target_stock_data = target_stock_data.tail(window)
@@ -98,7 +100,9 @@ def calculate_macd(stock_symbol, stock_data, window=14):
     exp1 = target_stock_data["Close"].ewm(span=12, adjust=False).mean()
     exp2 = target_stock_data["Close"].ewm(span=26, adjust=False).mean()
     target_stock_data["MACD"] = exp1 - exp2
-    target_stock_data["Signal_Line"] = target_stock_data["MACD"].ewm(span=9, adjust=False).mean()
+    target_stock_data["Signal_Line"] = (
+        target_stock_data["MACD"].ewm(span=9, adjust=False).mean()
+    )
     target_stock_data = target_stock_data.tail(window)
 
     # Track signals
@@ -149,8 +153,12 @@ def calculate_bb(stock_symbol, stock_data, window=14):
     target_stock_data = stock_data.tail(window * 3).copy()
     target_stock_data["MA20"] = target_stock_data["Close"].rolling(window=20).mean()
     target_stock_data["20d_std"] = target_stock_data["Close"].rolling(window=20).std()
-    target_stock_data["Upper_BB"] = target_stock_data["MA20"] + (target_stock_data["20d_std"] * 2)
-    target_stock_data["Lower_BB"] = target_stock_data["MA20"] - (target_stock_data["20d_std"] * 2)
+    target_stock_data["Upper_BB"] = target_stock_data["MA20"] + (
+        target_stock_data["20d_std"] * 2
+    )
+    target_stock_data["Lower_BB"] = target_stock_data["MA20"] - (
+        target_stock_data["20d_std"] * 2
+    )
     target_stock_data = target_stock_data.tail(window)
 
     # Track signals
@@ -247,7 +255,9 @@ def calculate_so(stock_symbol, stock_data, window=14):
     target_stock_data = stock_data.tail(window * 3).copy()
     low_min = target_stock_data["Low"].rolling(window=window).min()
     high_max = target_stock_data["High"].rolling(window=window).max()
-    target_stock_data["%K_raw"] = 100 * (target_stock_data["Close"] - low_min) / (high_max - low_min)
+    target_stock_data["%K_raw"] = (
+        100 * (target_stock_data["Close"] - low_min) / (high_max - low_min)
+    )
     target_stock_data["%K"] = target_stock_data["%K_raw"].rolling(window=3).mean()
     target_stock_data["%D"] = target_stock_data["%K"].rolling(window=3).mean()
     target_stock_data = target_stock_data.tail(window)
@@ -298,7 +308,10 @@ def calculate_atr(stock_symbol, stock_data, window=14):
     # Calculate indicator values
     target_stock_data = stock_data.tail(window * 2 - 1).copy()
     target_stock_data["ATR"] = ta.atr(
-        target_stock_data["High"], target_stock_data["Low"], target_stock_data["Close"], window=window
+        target_stock_data["High"],
+        target_stock_data["Low"],
+        target_stock_data["Close"],
+        window=window,
     )
     target_stock_data["ATR_trend"] = target_stock_data["ATR"].diff()
     target_stock_data = target_stock_data.tail(window)
@@ -471,20 +484,34 @@ def calculate_frl(stock_symbol, stock_data, window=14):
 def calculate_sar(stock_symbol, stock_data, window=14):
     """
     Parabolic SAR
-    Buy: When the current closing price is greater than the Parabolic SAR and the previous closing price was below the SAR.
-    Sell: When the current closing price is less than the Parabolic SAR and the previous closing price was above the SAR.
+    Buy: When the current closing price is greater than the Parabolic SAR and the
+     previous closing price was below the SAR.
+    Sell: When the current closing price is less than the Parabolic SAR and the
+     previous closing price was above the SAR.
     """
 
-    indicator_short_name = 'SAR'
+    indicator_short_name = "SAR"
 
     # Calculate indicator value
     target_stock_data = stock_data.tail(window).copy()
-    psar = ta.psar(target_stock_data['High'], target_stock_data['Low']) 
-    target_stock_data[indicator_short_name] = psar['PSARl_0.02_0.2']   
+    psar = ta.psar(target_stock_data["High"], target_stock_data["Low"])
+    target_stock_data[indicator_short_name] = psar["PSARl_0.02_0.2"]
 
     # Track signals
-    buy_signal = ((target_stock_data['Close'] > target_stock_data[indicator_short_name]) & (target_stock_data['Close'].shift(1) < target_stock_data[indicator_short_name].shift(1))).tolist()
-    sell_signal = ((target_stock_data['Close'] < target_stock_data[indicator_short_name]) & (target_stock_data['Close'].shift(1) > target_stock_data[indicator_short_name].shift(1))).tolist()
+    buy_signal = (
+        (target_stock_data["Close"] > target_stock_data[indicator_short_name])
+        & (
+            target_stock_data["Close"].shift(1)
+            < target_stock_data[indicator_short_name].shift(1)
+        )
+    ).tolist()
+    sell_signal = (
+        (target_stock_data["Close"] < target_stock_data[indicator_short_name])
+        & (
+            target_stock_data["Close"].shift(1)
+            > target_stock_data[indicator_short_name].shift(1)
+        )
+    ).tolist()
 
     graph_url = plot_graph(
         stock_symbol,
@@ -492,8 +519,15 @@ def calculate_sar(stock_symbol, stock_data, window=14):
         window,
         target_stock_data,
         indicator_short_name,
-        [{"column": "Close", "linestyle": "-", "color": "red", "label": "Price"},
-         {"column": indicator_short_name, "linestyle": "--", "color": "blue", "label": indicator_short_name}],
+        [
+            {"column": "Close", "linestyle": "-", "color": "red", "label": "Price"},
+            {
+                "column": indicator_short_name,
+                "linestyle": "--",
+                "color": "blue",
+                "label": indicator_short_name,
+            },
+        ],
     )
 
     return {
@@ -512,16 +546,27 @@ def calculate_wil(stock_symbol, stock_data, window=14):
     Sell: Williams %R crosses below -20 (overbought).
     """
 
-    indicator_short_name = 'WIL'
+    indicator_short_name = "WIL"
 
     # Calculate indicator value
     target_stock_data = stock_data.tail(window * 2 - 1).copy()
-    target_stock_data[indicator_short_name] = ta.willr(target_stock_data['High'], target_stock_data['Low'], target_stock_data['Close'], length=window)
+    target_stock_data[indicator_short_name] = ta.willr(
+        target_stock_data["High"],
+        target_stock_data["Low"],
+        target_stock_data["Close"],
+        length=window,
+    )
     target_stock_data = target_stock_data.tail(window)
 
-    # Track signals    
-    buy_signal = ((target_stock_data[indicator_short_name] > -80) & (target_stock_data[indicator_short_name].shift(1) <= -80)).tolist()
-    sell_signal = ((target_stock_data[indicator_short_name] < -20) & (target_stock_data[indicator_short_name].shift(1) >= -20)).tolist()
+    # Track signals
+    buy_signal = (
+        (target_stock_data[indicator_short_name] > -80)
+        & (target_stock_data[indicator_short_name].shift(1) <= -80)
+    ).tolist()
+    sell_signal = (
+        (target_stock_data[indicator_short_name] < -20)
+        & (target_stock_data[indicator_short_name].shift(1) >= -20)
+    ).tolist()
 
     graph_url = plot_graph(
         stock_symbol,
@@ -529,11 +574,20 @@ def calculate_wil(stock_symbol, stock_data, window=14):
         window,
         target_stock_data,
         indicator_short_name,
-        [{"column": indicator_short_name, "linestyle": "-", "color": "red", "label": indicator_short_name}],
-        [{"y": -80, "linestyle": "--", "color": "blue", "label": 'oversold'},
-        {"y": -20, "linestyle": "--", "color": "green", "label": 'overbought'}]
+        [
+            {
+                "column": indicator_short_name,
+                "linestyle": "-",
+                "color": "red",
+                "label": indicator_short_name,
+            }
+        ],
+        [
+            {"y": -80, "linestyle": "--", "color": "blue", "label": "oversold"},
+            {"y": -20, "linestyle": "--", "color": "green", "label": "overbought"},
+        ],
     )
-    
+
     return {
         "name": INDICATORS_DETAIL[indicator_short_name]["name"],
         "detail": INDICATORS_DETAIL[indicator_short_name]["detail"],
@@ -550,17 +604,23 @@ def calculate_dmi(stock_symbol, stock_data, window=14):
     Sell: When -DI crosses above +DI.
     """
 
-    indicator_short_name = 'DMI'
+    indicator_short_name = "DMI"
 
     # Calculate indicator value
     target_stock_data = stock_data.tail(window * 2 - 1).copy()
-    dmi = ta.dm(target_stock_data['High'], target_stock_data['Low'], length=window)
+    dmi = ta.dm(target_stock_data["High"], target_stock_data["Low"], length=window)
     target_stock_data = target_stock_data.join(dmi)
     target_stock_data = target_stock_data.tail(window)
 
-    # Track signals    
-    buy_signal = ((target_stock_data['DMP_14'] > target_stock_data['DMN_14']) & (target_stock_data['DMP_14'].shift(1) <= target_stock_data['DMN_14'].shift(1))).tolist()
-    sell_signal = ((target_stock_data['DMN_14'] > target_stock_data['DMP_14']) & (target_stock_data['DMN_14'].shift(1) <= target_stock_data['DMP_14'].shift(1))).tolist()
+    # Track signals
+    buy_signal = (
+        (target_stock_data["DMP_14"] > target_stock_data["DMN_14"])
+        & (target_stock_data["DMP_14"].shift(1) <= target_stock_data["DMN_14"].shift(1))
+    ).tolist()
+    sell_signal = (
+        (target_stock_data["DMN_14"] > target_stock_data["DMP_14"])
+        & (target_stock_data["DMN_14"].shift(1) <= target_stock_data["DMP_14"].shift(1))
+    ).tolist()
 
     graph_url = plot_graph(
         stock_symbol,
@@ -568,10 +628,12 @@ def calculate_dmi(stock_symbol, stock_data, window=14):
         window,
         target_stock_data,
         indicator_short_name,
-        [{"column": 'DMP_14', "linestyle": "-", "color": "red", "label": 'DMP 14'},
-         {"column": 'DMN_14', "linestyle": "-", "color": "blue", "label": 'DMN 14'}],
+        [
+            {"column": "DMP_14", "linestyle": "-", "color": "red", "label": "DMP 14"},
+            {"column": "DMN_14", "linestyle": "-", "color": "blue", "label": "DMN 14"},
+        ],
     )
-    
+
     return {
         "name": INDICATORS_DETAIL[indicator_short_name]["name"],
         "detail": INDICATORS_DETAIL[indicator_short_name]["detail"],
@@ -583,32 +645,51 @@ def calculate_dmi(stock_symbol, stock_data, window=14):
 
 def calculate_cmf(stock_symbol, stock_data, window=14):
     """
-    Chaikin Money Flow 
+    Chaikin Money Flow
     Buy: When CMF crosses above zero, indicating accumulation.
     Sell: When CMF crosses below zero, indicating distribution.
     """
 
-    indicator_short_name = 'CMF'
+    indicator_short_name = "CMF"
 
     # Calculate indicator value
-    target_stock_data = stock_data.tail(window*2-1).copy()
-    target_stock_data[indicator_short_name] = ta.cmf(high=target_stock_data['High'], low=target_stock_data['Low'], close=target_stock_data['Close'], volume=target_stock_data['Volume'], length=window)
+    target_stock_data = stock_data.tail(window * 2 - 1).copy()
+    target_stock_data[indicator_short_name] = ta.cmf(
+        high=target_stock_data["High"],
+        low=target_stock_data["Low"],
+        close=target_stock_data["Close"],
+        volume=target_stock_data["Volume"],
+        length=window,
+    )
     target_stock_data = target_stock_data.tail(window)
-    
-    # Track signals   
-    buy_signal = ((target_stock_data[indicator_short_name] > 0) & (target_stock_data[indicator_short_name].shift(1) <= 0)).tolist()
-    sell_signal = ((target_stock_data[indicator_short_name] < 0) & (target_stock_data[indicator_short_name].shift(1) >= 0)).tolist()
-    
+
+    # Track signals
+    buy_signal = (
+        (target_stock_data[indicator_short_name] > 0)
+        & (target_stock_data[indicator_short_name].shift(1) <= 0)
+    ).tolist()
+    sell_signal = (
+        (target_stock_data[indicator_short_name] < 0)
+        & (target_stock_data[indicator_short_name].shift(1) >= 0)
+    ).tolist()
+
     graph_url = plot_graph(
         stock_symbol,
         indicator_short_name,
         window,
         target_stock_data,
         indicator_short_name,
-        [{"column": indicator_short_name, "linestyle": "-", "color": "red", "label": indicator_short_name}],
-        [{"y": 0, "linestyle": "--", "color": "blue", "label": 'Zero'}],
+        [
+            {
+                "column": indicator_short_name,
+                "linestyle": "-",
+                "color": "red",
+                "label": indicator_short_name,
+            }
+        ],
+        [{"y": 0, "linestyle": "--", "color": "blue", "label": "Zero"}],
     )
-    
+
     return {
         "name": INDICATORS_DETAIL[indicator_short_name]["name"],
         "detail": INDICATORS_DETAIL[indicator_short_name]["detail"],

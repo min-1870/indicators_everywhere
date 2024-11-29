@@ -19,6 +19,10 @@ def test_calculators_output_structure():
         calculators.calculate_so(TICKER, stock_data, WINDOW),
         calculators.calculate_atr(TICKER, stock_data, WINDOW),
         calculators.calculate_frl(TICKER, stock_data, WINDOW),
+        calculators.calculate_sar(TICKER, stock_data, WINDOW),
+        calculators.calculate_wil(TICKER, stock_data, WINDOW),
+        calculators.calculate_dmi(TICKER, stock_data, WINDOW),
+        calculators.calculate_cmf(TICKER, stock_data, WINDOW),
     ]
 
     for result in results:

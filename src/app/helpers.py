@@ -6,7 +6,7 @@ from src.app.constants import (
     PLOT_GRID,
     PLOT_BOX,
     S3_URL_TO_GRAPHS,
-    DEBUG
+    DEBUG,
 )
 
 plt.rcParams.update(

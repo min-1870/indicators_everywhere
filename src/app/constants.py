@@ -105,7 +105,7 @@ INDICATORS_DETAIL = {
          price crosses above the SAR, indicating a potential trend reversal to
          the upside. Conversely, a sell signal is generated when the price
          crosses below the SAR, signaling a potential trend reversal to the
-         downside."""
+         downside.""",
     },
     "WIL": {
         "name": "Williams %R",
@@ -119,7 +119,7 @@ INDICATORS_DETAIL = {
          sell signal occurs when the %R moves from overbought territory (above -20)
          back below -20, suggesting a potential downward trend reversal. However,
          traders often use additional confirmation signals, as overbought or oversold
-         conditions can persist in strong trends."""
+         conditions can persist in strong trends.""",
     },
     "DMI": {
         "name": "Directional Movement Index",
@@ -134,7 +134,7 @@ INDICATORS_DETAIL = {
          signaling a potential sell signal. The ADX quantifies the strength of the
          trend, with values above 25 typically indicating a strong trend.
          Crossovers between +DI and -DI are often used as trade signals, providing
-         traders with insights into potential market movements."""
+         traders with insights into potential market movements.""",
     },
     "CMF": {
         "name": "Chaikin Money Flow",
@@ -150,6 +150,6 @@ INDICATORS_DETAIL = {
          crosses below zero, suggesting a potential downtrend. Additionally,
          divergences between price action and CMF can signal potential trend
          reversals, making it a valuable tool for traders to assess market strength
-         and make informed trading decisions."""
-}
+         and make informed trading decisions.""",
+    },
 }
