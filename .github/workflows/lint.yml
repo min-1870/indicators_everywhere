@@ -1,0 +1,23 @@
+name: lint
+
+on:
+    workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest version of Ubuntu as the runner environment
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'  # Use the desired Python version
+
+    - name: Run Black
+      run: black .  # Run black on the entire repository
+
+    - name: Run Flake8
+      run: flake8 .  # Run Flake8 on the entire repository
