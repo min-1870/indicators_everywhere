@@ -15,7 +15,7 @@ jobs:
     
     - name: Connect to EC2 and run commends
       run: |
-        ssh -v -i key.pem -o StrictHostKeyChecking=no ec2-user@52.62.115.2 << EOF
+        ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@52.62.115.2 << EOF
           # Kill existing screen session if it exists
           screen -S indicators_everywhere -X quit || true
 
