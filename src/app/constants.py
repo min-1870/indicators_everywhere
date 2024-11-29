@@ -2,7 +2,7 @@ S3_BUCKET_NAME = "indicators-everywhere"
 S3_GRAPHS_PATH = "graphs/"
 LOCAL_GRAPHS_PATH = "graphs"
 US_STOCK_FILE_NAME = "us_stock.json"
-DEBUG = False
+DEBUG = True
 TICKERS_RECOMMEND_NUMBER = 20
 PLOT_GRID = True
 PLOT_BOX = True
@@ -94,4 +94,62 @@ INDICATORS_DETAIL = {
          retraces to these levels and shows signs of reversal or continuation of the
          trend.""",
     },
+    "SAR": {
+        "name": "Parabolic SAR",
+        "detail": """The Parabolic SAR (Stop and Reverse) is a trend-following
+         indicator used to identify potential trend reversals and determine
+         buy or sell signals. It is plotted as a series of dots above or below
+         the price chart. When the price is in an uptrend, the SAR dots are
+         placed below the price, and when the price is in a downtrend, the SAR
+         dots are placed above the price. A buy signal is generated when the
+         price crosses above the SAR, indicating a potential trend reversal to
+         the upside. Conversely, a sell signal is generated when the price
+         crosses below the SAR, signaling a potential trend reversal to the
+         downside."""
+    },
+    "WIL": {
+        "name": "Williams %R",
+        "detail": """The Williams %R is a momentum oscillator that measures the level
+         of the close relative to the high-low range over a specified period,
+         typically 14 days. It fluctuates between 0 and -100, with readings above -20
+         considered overbought and below -80 considered oversold. The indicator helps
+         identify potential trend reversals and market entry or exit points. A buy
+         signal is generated when the %R moves from oversold territory (below -80)
+         back above -80, indicating a potential upward trend reversal. Conversely, a
+         sell signal occurs when the %R moves from overbought territory (above -20)
+         back below -20, suggesting a potential downward trend reversal. However,
+         traders often use additional confirmation signals, as overbought or oversold
+         conditions can persist in strong trends."""
+    },
+    "DMI": {
+        "name": "Directional Movement Index",
+        "detail": """The Directional Movement Index (DMI) is a technical analysis
+         indicator developed by J. Welles Wilder to assess the strength and
+         direction of a price trend. It consists of three components: the
+         Positive Directional Indicator (+DI), the Negative Directional Indicator
+         (-DI), and the Average Directional Index (ADX). The +DI measures upward
+         price movement, while the -DI measures downward price movement. When +DI
+         is above -DI, it indicates bullish pressure, suggesting a potential buy
+         signal. Conversely, when -DI is above +DI, it indicates bearish pressure,
+         signaling a potential sell signal. The ADX quantifies the strength of the
+         trend, with values above 25 typically indicating a strong trend.
+         Crossovers between +DI and -DI are often used as trade signals, providing
+         traders with insights into potential market movements."""
+    },
+    "CMF": {
+        "name": "Chaikin Money Flow",
+        "detail": """The Chaikin Money Flow (CMF) is a momentum indicator developed by
+         Marc Chaikin that measures the volume of money flowing into and out of an
+         asset over a specified period, typically 21 days. The CMF is based on the
+         principle that when the closing price is closer to the high of the period, it
+         indicates accumulation (buying pressure), while a closing price closer to the
+         low suggests distribution (selling pressure). The CMF oscillates between -1
+         and +1, with positive values indicating strong buying pressure and negative
+         values indicating selling pressure. A buy signal is generated when the CMF
+         crosses above zero, confirming an uptrend, while a sell signal occurs when it
+         crosses below zero, suggesting a potential downtrend. Additionally,
+         divergences between price action and CMF can signal potential trend
+         reversals, making it a valuable tool for traders to assess market strength
+         and make informed trading decisions."""
+}
 }
