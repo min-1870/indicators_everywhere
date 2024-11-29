@@ -9,16 +9,15 @@ on:
       - main  # Trigger when you pull from main branch
 
 jobs:
-  # test:
-  #   uses: ./.github/workflows/test.yml
+  test:
+    uses: ./.github/workflows/test.yml
   
   lint:
     uses: ./.github/workflows/lint.yml
 
   build:
     needs: [lint]
-    runs-on: ubuntu-latest  # Use the latest version of Ubuntu as the runner environment
-
+    runs-on: ubuntu-latest
     steps:
 
     - name: Setup SSH key
