@@ -41,25 +41,22 @@ jobs:
         chmod 600 key.pem
     
     - name: Connect to EC2
-      run: ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@52.62.115.2
+      run: ssh -t -i key.pem -o StrictHostKeyChecking=no ec2-user@52.62.115.2
 
     - name: Kill the server session
       run: screen -S indicators_everywhere -X quit || true
 
     - name: Create the server session
       run: screen -S indicators_everywhere
-
-    - name: Attach to the server session
-      run: screen -r indicators_everywhere
     
     - name: Move to repository path
-      run: cd /home/ec2-user/indicators_everywhere/
+      run: screen -S indicators_everywhere -x stuff "cd /home/ec2-user/indicators_everywhere/"
     
     - name: Pull the latest code
-      run: git pull
+      run: screen -S indicators_everywhere -x stuff "git pull"
 
     - name: Install the necessary packages
-      run: pip install -r requirements.txt
+      run: screen -S indicators_everywhere -x stuff "pip install -r requirements.txt"
     
     - name: Run the gunicorn server
-      run: gunicorn -d 2 src.app.app:app
+      run: screen -S indicators_everywhere -x stuff "gunicorn -d 2 src.app.app:app"
