@@ -1,7 +1,13 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 from src.app.api import upload_image_to_s3
-from src.app.constants import LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS, DEBUG
+from src.app.constants import (
+    LOCAL_GRAPHS_PATH,
+    PLOT_GRID,
+    PLOT_BOX,
+    S3_URL_TO_GRAPHS,
+    DEBUG
+)
 
 plt.rcParams.update(
     {
