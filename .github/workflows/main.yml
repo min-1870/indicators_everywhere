@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/lint.yml
 
   build:
-    needs: [lint]
+    needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
 
