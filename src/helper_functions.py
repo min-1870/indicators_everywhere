@@ -1,15 +1,8 @@
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
-import boto3
-from botocore.exceptions import NoCredentialsError, PartialCredentialsError
-import os
 from pathlib import Path
+from api import upload_image_to_s3
+from constants import LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS, DEBUG
 
-from constants import S3_GRAPHS_PATH, S3_BUCKET_NAME, LOCAL_GRAPHS_PATH, PLOT_GRID, PLOT_BOX, S3_URL_TO_GRAPHS
-
-# Load a custom font
-# plt.rcParams['font.family'] = 'custom_font'
-# plt.rcParams['font.path'] = ['/path/to/your/font.ttf']
 plt.rcParams.update({
     'font.family': 'sans-serif',
     'font.sans-serif': ['Helvetica', 'Arial', 'DejaVu Sans'],
@@ -67,6 +60,8 @@ def plot_two_graphs(stock_symbol, indicator_symbol, window, target_stock_data, c
 
     plt.close()
 
+    if DEBUG:
+        return f'{graphs_directory}/{file_name}' 
     return f'{S3_URL_TO_GRAPHS}{file_name}'
 
 def plot_graph(stock_symbol, indicator_symbol, window, target_stock_data, ylabel, columns, lines=False):
@@ -114,36 +109,8 @@ def plot_graph(stock_symbol, indicator_symbol, window, target_stock_data, ylabel
 
     plt.close()
 
+    if DEBUG:
+        return f'{graphs_directory}/{file_name}' 
     return f'{S3_URL_TO_GRAPHS}{file_name}'
 
-def upload_image_to_s3(graphs_directory, file_name):
-    
-    try:
-        # Initialize the S3 client
-        s3 = boto3.client('s3')
 
-        local_directory = graphs_directory / file_name
-        s3_directory = f"{S3_GRAPHS_PATH}{file_name}"
-
-        # Upload the file
-        s3.upload_file(
-            local_directory, 
-            S3_BUCKET_NAME, 
-            s3_directory,
-            ExtraArgs={
-                'ContentType': 'image/png',  
-            }
-        )
-
-        
-        if local_directory.exists():
-            local_directory.unlink()
-    
-    except FileNotFoundError:
-        print("The file was not found.")
-    except NoCredentialsError:
-        print("Credentials not available.")
-    except PartialCredentialsError:
-        print("Incomplete credentials provided.")
-    except Exception as e:
-        print(f"An error occurred: {e}")

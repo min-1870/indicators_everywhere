@@ -277,8 +277,15 @@
         </div>
 
         <script>
+            const debug = true
+            let domain = 'https://indicatorseverywhere.min1870.com'
+
+            if (debug) {
+                domain = 'http://127.0.0.1:8000'
+            }
             
-            fetch(`https://indicatorseverywhere.min1870.com/api/recommend`)
+
+            fetch(`${domain}/api/recommend`)
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(errorData => {
@@ -312,7 +319,6 @@
                 });
 
             };
-
 
             function hideAllExcept(id){
                 const detail = document.getElementById('indicator-button-detail-content');
@@ -353,7 +359,7 @@
             function handleSubmit() {
                 const inputElement = document.getElementById('userInput');
                 const inputValue = inputElement.value;
-                fetch(`https://indicatorseverywhere.min1870.com/api/analyze?input=${encodeURIComponent(inputValue)}`)
+                fetch(`${domain}/api/analyze?input=${encodeURIComponent(inputValue)}`)
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(errorData => {
@@ -437,7 +443,7 @@
                     <div >
                         <p style="font-size:16px;font-weight:400;">${indicator.detail}</p>
                         <div style="margin-top:10px;margin-bottom:10px;display:flex;align-items:center;">
-                            <p>Overall Signal: </p>
+                            <p>Latest Signal: </p>
                             <p style="font-size:20px;margin-left:10px" id="${indicator.summary}">${indicator.summary}</p>
                         </div>
                         <p style="margin-top:10px;margin-bottom:10px;">History:</p>

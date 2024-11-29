@@ -1,4 +1,4 @@
-from fetch import fetch_data
+from api import fetch_data
 from indicators import *
 
 def analyze_stock(stock_symbol, window=14):
