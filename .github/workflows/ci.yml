@@ -53,5 +53,5 @@ jobs:
           screen -S indicators_everywhere -X stuff $'cd /home/ec2-user/indicators_everywhere/\n'
           screen -S indicators_everywhere -X stuff $'git pull\n'
           screen -S indicators_everywhere -X stuff $'pip install -r requirements.txt\n'
-          screen -S indicators_everywhere -X stuff $'gunicorn -d 2 src.app.app:app\n'
+          screen -S indicators_everywhere -X stuff $'gunicorn -w 2 src.app.app:app\n'
         EOF
