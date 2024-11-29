@@ -40,8 +40,8 @@ jobs:
         echo "${{ secrets.EC2_INSTANCE_SECRET_KEY }}" > key.pem
         chmod 600 key.pem
     
-    - name: Connect to EC2 and run multiple commands
-      run: ssh -i key.pem ec2-user@52.62.115.2
+    - name: Connect to EC2
+      run: ssh -t -i key.pem ec2-user@52.62.115.2
 
     - name: Kill the server session
       run: screen -S indicators_everywhere -X quit
