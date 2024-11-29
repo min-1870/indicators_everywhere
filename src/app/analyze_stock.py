@@ -88,6 +88,10 @@ def analyze_stock(stock_symbol, window=14):
         calculators.calculate_so(stock_symbol, stock_data, window),
         calculators.calculate_atr(stock_symbol, stock_data, window),
         calculators.calculate_frl(stock_symbol, stock_data, window),
+        calculators.calculate_sar(stock_symbol, stock_data, window),
+        calculators.calculate_wil(stock_symbol, stock_data, window),
+        calculators.calculate_dmi(stock_symbol, stock_data, window),
+        calculators.calculate_cmf(stock_symbol, stock_data, window),
     ]
 
     # Summarize the calculated signals
