@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  
 from constants import TICKERS_RECOMMEND_NUMBER
-from analyze import analyze_stock
-from recommend import recommend_tickers
+from analyze_stock import analyze_stock
+from recommend_tickers import recommend_tickers
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})

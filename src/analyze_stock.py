@@ -2,6 +2,10 @@ from api import fetch_data
 from indicators import *
 
 def analyze_stock(stock_symbol, window=14):
+    '''
+    This function calculate the individual indicators of the tickers
+    to provide indicators value and graphs of the tickers to the clients.
+    '''
 
     def summarize_signal(dates, signal):
 
