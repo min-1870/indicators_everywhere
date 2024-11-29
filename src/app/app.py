@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from src.app.constants import TICKERS_RECOMMEND_NUMBER
+from src.app.constants import TICKERS_RECOMMEND_NUMBER, DEBUG
 from src.app.analyze_stock import analyze_stock
 from src.app.recommend_tickers import recommend_tickers
 
@@ -36,6 +36,7 @@ def get_recommend():
 
 if __name__ == "__main__":
     app.run(
+        debug=DEBUG,
         host="0.0.0.0",
         port=8000,
     )
