@@ -21,7 +21,8 @@ def fetch_data(symbol, duration):
 
     # Fetch historical data with a daily interval
     stock_data = yf.download(symbol, start=start_date, end=end_date, interval="1d")
-
+    stock_data.columns = stock_data.columns.get_level_values(0)
+    
     if len(stock_data) == 0:
         raise ValueError("Failed to fetch the finance history.")
 
