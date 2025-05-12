@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 from src.app.constants import S3_GRAPHS_PATH, S3_BUCKET_NAME, DEBUG
+from curl_cffi import requests
 
 
 def fetch_data(symbol, duration):
@@ -19,7 +20,9 @@ def fetch_data(symbol, duration):
     # Format the date as a string in the desired format
     end_date = current_date.strftime("%Y-%m-%d")
 
-    # Fetch historical data with a daily interval
+    # Fetch historical data with a daily interval  from curl_cffi import requests
+    session = requests.Session(impersonate="chrome")
+    ticker = yf.Ticker('...', session=session)
     stock_data = yf.download(symbol, start=start_date, end=end_date, interval="1d")
     stock_data.columns = stock_data.columns.get_level_values(0)
 
