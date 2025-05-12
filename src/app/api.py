@@ -22,7 +22,7 @@ def fetch_data(symbol, duration):
 
     # Fetch historical data with a daily interval  from curl_cffi import requests
     session = requests.Session(impersonate="chrome")
-    ticker = yf.Ticker('...', session=session)
+    yf.Ticker('...', session=session)
     stock_data = yf.download(symbol, start=start_date, end=end_date, interval="1d")
     stock_data.columns = stock_data.columns.get_level_values(0)
 
