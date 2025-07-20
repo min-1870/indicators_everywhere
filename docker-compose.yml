@@ -1,5 +1,5 @@
 services:
-  indicator_everywhere_nginx:
+  nginx:
     image: nginx:latest
     container_name: indicator_everywhere_nginx_container
     volumes:
@@ -11,11 +11,11 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - indicator_everywhere_api_server 
+      - api_server 
     networks:
       - app-network
 
-  indicator_everywhere_api_server:
+  api_server:
     build: .
     container_name: indicator_everywhere_api_server_container
     volumes:
