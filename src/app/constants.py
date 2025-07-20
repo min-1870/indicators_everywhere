@@ -1,4 +1,4 @@
-S3_BUCKET_NAME = "indicators-everywhere"
+S3_BUCKET_NAME = "demo-min-1870"
 S3_GRAPHS_PATH = "graphs/"
 LOCAL_GRAPHS_PATH = "graphs"
 US_STOCK_FILE_NAME = "us_stock.json"
