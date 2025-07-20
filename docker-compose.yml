@@ -1,7 +1,7 @@
 services:
-  nginx:
+  indicator_everywhere_nginx:
     image: nginx:latest
-    container_name: nginx_container
+    container_name: indicator_everywhere_nginx_container
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
@@ -11,13 +11,13 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - api_server 
+      - indicator_everywhere_api_server 
     networks:
       - app-network
 
-  api_server:
+  indicator_everywhere_api_server:
     build: .
-    container_name: api_server_container
+    container_name: indicator_everywhere_api_server_container
     volumes:
       - .:/app
     ports:
