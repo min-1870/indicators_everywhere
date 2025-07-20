@@ -1,0 +1,30 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_container
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+      - ./src/statics:/statics
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api_server 
+    networks:
+      - app-network
+
+  api_server:
+    build: .
+    container_name: api_server_container
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

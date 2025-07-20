@@ -10,24 +10,26 @@ def fetch_data(symbol, duration):
     """
     This function fetch history prices of a stock from yahoo finance.
     """
+    try:
+        # Get the current date
+        current_date = datetime.now()
 
-    # Get the current date
-    current_date = datetime.now()
+        # Define the start and end dates
+        start_date = (current_date - timedelta(days=duration)).strftime("%Y-%m-%d")
 
-    # Define the start and end dates
-    start_date = (current_date - timedelta(days=duration)).strftime("%Y-%m-%d")
+        # Format the date as a string in the desired format
+        end_date = current_date.strftime("%Y-%m-%d")
 
-    # Format the date as a string in the desired format
-    end_date = current_date.strftime("%Y-%m-%d")
-
-    # Fetch historical data with a daily interval  from curl_cffi import requests
-    session = requests.Session(impersonate="chrome")
-    yf.Ticker('...', session=session)
-    stock_data = yf.download(symbol, start=start_date, end=end_date, interval="1d")
-    stock_data.columns = stock_data.columns.get_level_values(0)
-
-    if len(stock_data) == 0:
-        raise ValueError("Failed to fetch the finance history.")
+        # Fetch historical data with a daily interval  from curl_cffi import requests
+        session = requests.Session(impersonate="chrome")
+        yf.Ticker('...', session=session)
+        stock_data = yf.download(symbol, start=start_date, end=end_date, interval="1d")
+        stock_data.columns = stock_data.columns.get_level_values(0)
+        print(f"Fetched data for {symbol} from {start_date} to {end_date}")
+    except len(stock_data) == 0:
+        raise ValueError("No data found for the given stock symbol or duration.")
+    except Exception as e:
+        raise ValueError(f"An error occurred while fetching data: {e}")
 
     return stock_data
 
