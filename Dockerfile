@@ -21,5 +21,5 @@ CMD ["gunicorn", \
      "--worker-class=gthread", \
      "--threads=4", \
      "--preload", \
-     "src.app:app" \
+     "src.app.app:app" \
 ]
