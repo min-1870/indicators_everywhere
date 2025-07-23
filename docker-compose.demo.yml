@@ -3,7 +3,6 @@ services:
   api_server:
     build: .
     container_name: indicator_everywhere_api_server_container
-    mem_limit: 300m            # <- cap RAM at 300 MB
     restart: on-failure
     volumes:
       - .:/app
